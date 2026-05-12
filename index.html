@@ -288,8 +288,14 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       };
 
       const [feedbacks, setFeedbacks] = useState(loadInitialFeedbacks);
-      const [activeFeedbackId, setActiveFeedbackId] = useState(null);
-      const [activeMediaId, setActiveMediaId] = useState(null);
+      const [activeFeedbackId, setActiveFeedbackId] = useState(() => {
+        const initial = loadInitialFeedbacks();
+        return initial[0]?.id || null;
+      });
+      const [activeMediaId, setActiveMediaId] = useState(() => {
+        const initial = loadInitialFeedbacks();
+        return initial[0]?.media?.[0]?.id || null;
+      });
       const [annotationMode, setAnnotationMode] = useState(false);
       const [currentAnnotation, setCurrentAnnotation] = useState(null);
       const [annotationNote, setAnnotationNote] = useState('');
