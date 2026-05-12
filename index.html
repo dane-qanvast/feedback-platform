@@ -46,6 +46,7 @@
     const PanelRightClose = (p) => <Icon {...p}><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/><path d="m11 15-3-3 3-3"/></Icon>;
     const ChevronUp = (p) => <Icon {...p}><polyline points="18 15 12 9 6 15"/></Icon>;
     const ChevronDown = (p) => <Icon {...p}><polyline points="6 9 12 15 18 9"/></Icon>;
+    const Eye = (p) => <Icon {...p}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></Icon>;
 
     // --- Helpers ---
     const escapeHtml = (str) => str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;') : '';
@@ -66,13 +67,18 @@
       note: '',
     });
 
+    const ANNOTATION_MAX_LENGTH = 200;
+
     const isMediaFile = (f) => f.type.startsWith('image/') || f.type.startsWith('video/');
 
     // --- Export HTML report ---
     const generateExportHTML = (data) => {
-      const feedbacksHTML = data.map((fb) => {
-        const mediaHTML = fb.media.map(m => {
-          const annotationsHTML = m.annotations.map(a => `<div class="annotation-item">
+      const feedbacksHTML = data.map((fb, fbIdx) => {
+        const mediaHTML = fb.media.map((m, mIdx) => {
+          // Unique scope id to avoid collisions across feedbacks/media in the same report
+          const scopeId = `f${fbIdx}-m${mIdx}`;
+
+          const annotationsHTML = m.annotations.map(a => `<div class="annotation-item" id="ann-${scopeId}-${a.number}">
             <div class="annotation-marker">${a.number}</div>
             <div class="annotation-content"><div class="annotation-note">${escapeHtml(a.note)}</div></div>
           </div>`).join('');
@@ -80,7 +86,7 @@
           const mediaContent = m.type === 'image'
             ? `<div class="media-wrapper">
                 <img src="${m.dataUrl}" alt="${escapeHtml(m.name)}" />
-                ${m.annotations.map(a => `<div class="marker" style="left: ${a.x}%; top: ${a.y}%;">${a.number}</div>`).join('')}
+                ${m.annotations.map(a => `<a href="#ann-${scopeId}-${a.number}" class="marker" style="left: ${a.x}%; top: ${a.y}%;" data-note="${escapeHtml(a.note)}">${a.number}<span class="marker-tooltip">${escapeHtml(a.note)}</span></a>`).join('')}
               </div>`
             : `<video controls src="${m.dataUrl}"></video>`;
 
@@ -115,12 +121,13 @@
 ::-webkit-scrollbar-track { background: #09090b; }
 ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 5px; border: 2px solid #09090b; }
 ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
-html { scrollbar-width: thin; scrollbar-color: #27272a #09090b; }
+html { scrollbar-width: thin; scrollbar-color: #27272a #09090b; scroll-behavior: smooth; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e4e4e7; line-height: 1.6; padding: 40px 20px; }
 .container { max-width: 1000px; margin: 0 auto; }
 .report-header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(79, 70, 229, 0.25); }
 .report-header h1 { font-size: 32px; margin-bottom: 8px; }
 .report-header .meta { opacity: 0.9; font-size: 14px; }
+.report-header .safari-tip { margin-top: 16px; padding: 10px 14px; background: rgba(255,255,255,0.12); border-radius: 8px; font-size: 13px; opacity: 0.95; backdrop-filter: blur(4px); }
 .feedback-section { background: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 32px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
 .feedback-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272a; padding-bottom: 16px; margin-bottom: 20px; }
 .feedback-header h2 { font-size: 22px; color: #fafafa; }
@@ -132,19 +139,32 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .media-header { background: #1c1c20; padding: 12px 16px; font-size: 13px; font-weight: 600; color: #a1a1aa; border-bottom: 1px solid #27272a; }
 .media-wrapper { position: relative; display: inline-block; max-width: 100%; }
 .media-wrapper img, video { max-width: 100%; display: block; height: auto; }
-.marker { position: absolute; width: 28px; height: 28px; background: #ef4444; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; transform: translate(-50%, -50%); box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5); border: 2px solid #18181b; }
+.marker { position: absolute; width: 28px; height: 28px; background: #ef4444; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; transform: translate(-50%, -50%); box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5); border: 2px solid #18181b; text-decoration: none; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.marker:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.7); z-index: 10; }
+.marker-tooltip { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: #18181b; color: #e4e4e7; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: normal; line-height: 1.5; white-space: normal; width: max-content; max-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border: 1px solid #3f3f46; opacity: 0; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; transform: translateX(-50%) translateY(4px); text-align: left; }
+.marker-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #18181b; }
+.marker:hover .marker-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 .annotations-list, .video-note { padding: 20px; background: #1c1c20; border-top: 1px solid #27272a; }
 .annotations-list h4, .video-note h4 { font-size: 13px; text-transform: uppercase; color: #71717a; margin-bottom: 12px; letter-spacing: 0.5px; }
 .video-note p { color: #e4e4e7; white-space: pre-wrap; }
-.annotation-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #27272a; }
+.annotation-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #27272a; scroll-margin-top: 20px; transition: background 0.4s ease; border-radius: 8px; padding-left: 8px; padding-right: 8px; margin-left: -8px; margin-right: -8px; }
 .annotation-item:last-child { border-bottom: none; }
+.annotation-item:target { background: rgba(99, 102, 241, 0.15); animation: highlight 1.5s ease; }
+@keyframes highlight {
+  0% { background: rgba(99, 102, 241, 0.4); }
+  100% { background: rgba(99, 102, 241, 0.15); }
+}
 .annotation-marker { flex-shrink: 0; width: 28px; height: 28px; background: #ef4444; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; }
 .annotation-content { flex: 1; }
 .annotation-note { color: #e4e4e7; white-space: pre-wrap; }
 .empty { color: #71717a; font-style: italic; }
 </style></head><body>
 <div class="container">
-<div class="report-header"><h1>Feedback Report</h1><div class="meta">Generated ${new Date().toLocaleString()} • ${data.length} feedback item${data.length !== 1 ? 's' : ''}</div></div>
+<div class="report-header">
+  <h1>Feedback Report</h1>
+  <div class="meta">Generated ${new Date().toLocaleString()} • ${data.length} feedback item${data.length !== 1 ? 's' : ''}</div>
+  <div class="safari-tip">💡 If some videos fail to play in the report, try opening this page in Safari.</div>
+</div>
 ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
 </div></body></html>`;
     };
@@ -240,10 +260,9 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             <li className="flex gap-2"><span className="text-indigo-400 font-semibold flex-shrink-0">4.</span><span><strong className="text-zinc-200">VLC</strong> — Convert/Save → choose H.264 + MP3 (MP4) profile</span></li>
           </ul>
         </div>
-        <p className="text-xs text-zinc-500">The video is still embedded in the exported HTML report.</p>
-        <button onClick={onRetry} className="mt-3 text-xs text-indigo-400 hover:text-indigo-300 font-medium">
-          Try playing anyway →
-        </button>
+        <p className="text-xs text-zinc-500">
+          The video is still embedded in the exported HTML report. If some videos fail to play in the report, try opening it in Safari.
+        </p>
       </div>
     );
 
@@ -255,10 +274,13 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const [annotationMode, setAnnotationMode] = useState(false);
       const [currentAnnotation, setCurrentAnnotation] = useState(null);
       const [annotationNote, setAnnotationNote] = useState('');
+      const [editingAnnotationId, setEditingAnnotationId] = useState(null);
+      const [editingNote, setEditingNote] = useState('');
       const [isDragging, setIsDragging] = useState(false);
       const [videoError, setVideoError] = useState(false);
       const [showAnnotations, setShowAnnotations] = useState(false);
       const [bottomCollapsed, setBottomCollapsed] = useState(false);
+      const [showPreview, setShowPreview] = useState(false);
 
       const dragCounter = useRef(0);
       const fileInputRef = useRef(null);
@@ -420,6 +442,27 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         ));
       };
 
+      const startEditAnnotation = (annotation) => {
+        setEditingAnnotationId(annotation.id);
+        setEditingNote(annotation.note);
+      };
+
+      const saveEditAnnotation = () => {
+        if (!editingNote.trim() || editingAnnotationId == null) return;
+        updateActiveMedia(media => media.map(m =>
+          m.id === activeMediaId
+            ? { ...m, annotations: m.annotations.map(a => a.id === editingAnnotationId ? { ...a, note: editingNote } : a) }
+            : m
+        ));
+        setEditingAnnotationId(null);
+        setEditingNote('');
+      };
+
+      const cancelEditAnnotation = () => {
+        setEditingAnnotationId(null);
+        setEditingNote('');
+      };
+
       // --- Drag & drop ---
       const handleDragEnter = (e) => {
         e.preventDefault();
@@ -481,6 +524,41 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             </div>
           )}
 
+          {/* Preview modal */}
+          {showPreview && (
+            <div className="absolute inset-0 z-40 bg-black/70 backdrop-blur-sm flex flex-col">
+              {/* Preview toolbar */}
+              <div className="bg-zinc-900 border-b border-zinc-800 px-5 py-3 flex items-center justify-between flex-shrink-0">
+                <div>
+                  <h2 className="text-base font-semibold text-zinc-100">Preview Report</h2>
+                  <p className="text-xs text-zinc-500 mt-0.5">Review before exporting. Close to make changes.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowPreview(false)}
+                    className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-sm font-medium flex items-center gap-1.5 transition"
+                  >
+                    <X size={14} />
+                    Close
+                  </button>
+                  <button
+                    onClick={exportHTML}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg text-sm font-semibold flex items-center gap-1.5 hover:opacity-90 transition shadow-lg shadow-indigo-500/30"
+                  >
+                    <Download size={14} />
+                    Export HTML
+                  </button>
+                </div>
+              </div>
+              {/* Preview iframe */}
+              <iframe
+                title="Report Preview"
+                srcDoc={generateExportHTML(feedbacks)}
+                className="flex-1 w-full bg-zinc-950 border-0"
+              />
+            </div>
+          )}
+
           {/* Feedback list sidebar */}
           <div className="w-56 bg-zinc-950 border-r border-zinc-900 flex flex-col">
             <div className="px-4 py-3 border-b border-zinc-900">
@@ -536,11 +614,11 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             {feedbacks.length > 0 && (
               <div className="p-3 border-t border-zinc-900">
                 <button
-                  onClick={exportHTML}
+                  onClick={() => setShowPreview(true)}
                   className="w-full bg-zinc-100 text-zinc-900 py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition"
                 >
-                  <Download size={16} />
-                  Export HTML Report
+                  <Eye size={16} />
+                  Preview & Export
                 </button>
               </div>
             )}
@@ -744,16 +822,25 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
 
                       {currentAnnotation && (
                         <div className="p-4 bg-yellow-500/10 border-b border-yellow-500/30">
-                          <div className="text-xs font-medium text-yellow-400 mb-2">New annotation</div>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="text-xs font-medium text-yellow-400">New annotation</div>
+                            <div className={`text-[10px] font-mono ${annotationNote.length > ANNOTATION_MAX_LENGTH - 20 ? 'text-yellow-400' : 'text-zinc-500'}`}>
+                              {annotationNote.length}/{ANNOTATION_MAX_LENGTH}
+                            </div>
+                          </div>
                           <textarea
                             value={annotationNote}
-                            onChange={(e) => setAnnotationNote(e.target.value)}
+                            onChange={(e) => {
+                              const v = e.target.value;
+                              if (v.length <= ANNOTATION_MAX_LENGTH) setAnnotationNote(v);
+                            }}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' && !e.shiftKey) {
                                 e.preventDefault();
                                 if (annotationNote.trim()) saveAnnotation();
                               }
                             }}
+                            maxLength={ANNOTATION_MAX_LENGTH}
                             placeholder="Describe the issue or feedback..."
                             autoFocus
                             className="w-full text-sm bg-zinc-950 text-zinc-100 border border-zinc-700 rounded-lg px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition resize-none placeholder:text-zinc-600"
@@ -784,24 +871,91 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                             Click "Annotate" then tap the image
                           </div>
                         ) : (
-                          activeMedia.annotations.map(a => (
-                            <div key={a.id} className="group p-3 mb-2 bg-zinc-800/50 rounded-lg border border-zinc-800">
-                              <div className="flex items-start gap-2">
-                                <div className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                  {a.number}
+                          activeMedia.annotations.map(a => {
+                            const isEditing = editingAnnotationId === a.id;
+                            return (
+                              <div key={a.id} className="group p-3 mb-2 bg-zinc-800/50 rounded-lg border border-zinc-800">
+                                <div className="flex items-start gap-2">
+                                  <div className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    {a.number}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    {isEditing ? (
+                                      <>
+                                        <div className="flex items-center justify-between mb-1.5">
+                                          <div className="text-[10px] uppercase tracking-wide text-indigo-400 font-semibold">Editing</div>
+                                          <div className={`text-[10px] font-mono ${editingNote.length > ANNOTATION_MAX_LENGTH - 20 ? 'text-yellow-400' : 'text-zinc-500'}`}>
+                                            {editingNote.length}/{ANNOTATION_MAX_LENGTH}
+                                          </div>
+                                        </div>
+                                        <textarea
+                                          value={editingNote}
+                                          onChange={(e) => {
+                                            const v = e.target.value;
+                                            if (v.length <= ANNOTATION_MAX_LENGTH) setEditingNote(v);
+                                          }}
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault();
+                                              if (editingNote.trim()) saveEditAnnotation();
+                                            } else if (e.key === 'Escape') {
+                                              cancelEditAnnotation();
+                                            }
+                                          }}
+                                          maxLength={ANNOTATION_MAX_LENGTH}
+                                          autoFocus
+                                          className="w-full text-sm bg-zinc-950 text-zinc-100 border border-zinc-700 rounded-lg px-2 py-1.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition resize-none placeholder:text-zinc-600"
+                                          rows={3}
+                                        />
+                                        <div className="flex items-center justify-end gap-1.5 mt-1.5">
+                                          <button
+                                            onClick={cancelEditAnnotation}
+                                            className="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-md text-xs transition"
+                                          >
+                                            Cancel
+                                          </button>
+                                          <button
+                                            onClick={saveEditAnnotation}
+                                            disabled={!editingNote.trim()}
+                                            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-md text-xs font-medium transition flex items-center gap-1"
+                                          >
+                                            <Save size={10} />
+                                            Save
+                                          </button>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <div
+                                        onClick={() => startEditAnnotation(a)}
+                                        className="text-sm text-zinc-200 whitespace-pre-wrap break-words cursor-text hover:bg-zinc-800/50 -mx-1 px-1 py-0.5 rounded transition"
+                                        title="Click to edit"
+                                      >
+                                        {a.note}
+                                      </div>
+                                    )}
+                                  </div>
+                                  {!isEditing && (
+                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                      <button
+                                        onClick={() => startEditAnnotation(a)}
+                                        className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-indigo-400 transition"
+                                        title="Edit"
+                                      >
+                                        <Edit3 size={12} />
+                                      </button>
+                                      <button
+                                        onClick={() => deleteAnnotation(a.id)}
+                                        className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 transition"
+                                        title="Delete"
+                                      >
+                                        <Trash2 size={12} />
+                                      </button>
+                                    </div>
+                                  )}
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-sm text-zinc-200 whitespace-pre-wrap break-words">{a.note}</div>
-                                </div>
-                                <button
-                                  onClick={() => deleteAnnotation(a.id)}
-                                  className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 transition flex-shrink-0"
-                                >
-                                  <Trash2 size={12} />
-                                </button>
                               </div>
-                            </div>
-                          ))
+                            );
+                          })
                         )}
                       </div>
                     </div>
