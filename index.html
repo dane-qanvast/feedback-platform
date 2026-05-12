@@ -315,6 +315,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const imageRef = useRef(null);
       const addFilesRef = useRef(null);
       const menuRef = useRef(null);
+      const overallNoteRef = useRef(null);
 
       const activeFeedback = feedbacks.find(f => f.id === activeFeedbackId);
       const activeMedia = activeFeedback?.media.find(m => m.id === activeMediaId);
@@ -1148,17 +1149,43 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                           <input
                             type="text"
                             value={activeFeedback.title}
-                            onChange={(e) => updateFeedback(activeFeedback.id, { title: e.target.value })}
+                            onChange={(e) => {
+                              let v = e.target.value;
+                              if (v.length > 0) v = v.charAt(0).toUpperCase() + v.slice(1);
+                              updateFeedback(activeFeedback.id, { title: v });
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                overallNoteRef.current?.focus();
+                              }
+                            }}
+                            autoCapitalize="sentences"
                             className="text-base font-bold text-zinc-100 bg-zinc-950/50 border border-zinc-800 outline-none w-full hover:border-zinc-700 hover:bg-zinc-950 focus:bg-zinc-950 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/20 pl-3 pr-9 py-1.5 rounded transition cursor-text"
                             placeholder="Feedback title"
                             title="Click to edit title"
                           />
                           <Edit3
                             size={12}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600 group-hover:text-zinc-400 group-focus-within:text-zinc-200 transition pointer-events-none"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600 group-hover:text-zinc-400 transition pointer-events-none group-focus-within:hidden"
                           />
+                          {activeFeedback.title && (
+                            <button
+                              type="button"
+                              onMouseDown={(e) => {
+                                // Prevent input blur so the clear feels instant
+                                e.preventDefault();
+                                updateFeedback(activeFeedback.id, { title: '' });
+                              }}
+                              className="hidden group-focus-within:flex absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition"
+                              title="Clear title"
+                            >
+                              <X size={12} />
+                            </button>
+                          )}
                         </div>
                         <textarea
+                          ref={overallNoteRef}
                           value={activeFeedback.overallNote}
                           onChange={(e) => updateFeedback(activeFeedback.id, { overallNote: e.target.value })}
                           placeholder="Overall note — describe the feedback, context, or issues..."
