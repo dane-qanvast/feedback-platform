@@ -136,8 +136,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .report-header .safari-tip { margin-top: 16px; padding: 10px 14px; background: rgba(250,250,250,0.05); border: 1px solid #27272a; border-radius: 4px; font-size: 13px; color: #a1a1aa; }
 .feedback-section { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 32px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
 .feedback-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272a; padding-bottom: 16px; margin-bottom: 20px; }
-.feedback-header h2 { font-size: 22px; color: #fafafa; display: flex; align-items: baseline; gap: 12px; }
-.feedback-number { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; color: #3f8efc; font-weight: 600; }
+.feedback-header h2 { font-size: 22px; color: #fafafa; display: flex; align-items: center; gap: 14px; }
+.feedback-number { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 20px; color: white; background: #3f8efc; font-weight: 400; padding: 6px 12px; border-radius: 6px; line-height: 1; box-shadow: 0 2px 8px rgba(63, 142, 252, 0.3); }
 .feedback-date { color: #71717a; font-size: 13px; }
 .overall-note { background: rgba(250, 250, 250, 0.04); border-left: 4px solid #71717a; padding: 16px 20px; border-radius: 4px; margin-bottom: 24px; }
 .overall-note h3 { font-size: 14px; color: #a1a1aa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -309,6 +309,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const [showPreview, setShowPreview] = useState(false);
       const [showMenu, setShowMenu] = useState(false);
       const [storageStatus, setStorageStatus] = useState(null);
+      const [confirmDialog, setConfirmDialog] = useState(null);
 
       const dragCounter = useRef(0);
       const fileInputRef = useRef(null);
@@ -404,12 +405,41 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       };
 
       const deleteFeedback = (id) => {
-        const updated = feedbacks.filter(f => f.id !== id);
-        setFeedbacks(updated);
-        if (activeFeedbackId === id) {
-          setActiveFeedbackId(updated[0]?.id || null);
-          setActiveMediaId(null);
+        const target = feedbacks.find(f => f.id === id);
+        if (!target) return;
+
+        const mediaCount = target.media.length;
+        const annotationCount = target.media.reduce((sum, m) => sum + m.annotations.length, 0);
+        const noteCount = (target.overallNote ? 1 : 0) + target.media.filter(m => m.note).length;
+
+        const parts = [];
+        if (mediaCount > 0) parts.push(`${mediaCount} media item${mediaCount === 1 ? '' : 's'}`);
+        if (annotationCount > 0) parts.push(`${annotationCount} annotation${annotationCount === 1 ? '' : 's'}`);
+        if (noteCount > 0) parts.push(`${noteCount} note${noteCount === 1 ? '' : 's'}`);
+
+        const performDelete = () => {
+          const updated = feedbacks.filter(f => f.id !== id);
+          setFeedbacks(updated);
+          if (activeFeedbackId === id) {
+            setActiveFeedbackId(updated[0]?.id || null);
+            setActiveMediaId(null);
+          }
+          setConfirmDialog(null);
+        };
+
+        // No content to lose — delete silently
+        if (parts.length === 0) {
+          performDelete();
+          return;
         }
+
+        setConfirmDialog({
+          title: 'Delete feedback?',
+          message: `This will permanently delete "${target.title}" along with ${parts.join(', ')}. This cannot be undone.`,
+          confirmLabel: 'Delete',
+          danger: true,
+          onConfirm: performDelete,
+        });
       };
 
       const updateFeedback = (id, updates) => {
@@ -579,16 +609,27 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             if (!Array.isArray(importedFeedbacks)) {
               throw new Error('Invalid file format');
             }
-            const replace = feedbacks.length === 0 || window.confirm(
-              `Import will replace your current ${feedbacks.length} feedback item${feedbacks.length === 1 ? '' : 's'}. Continue?`
-            );
-            if (replace) {
+
+            const doImport = () => {
               setFeedbacks(importedFeedbacks);
               setActiveFeedbackId(importedFeedbacks[0]?.id || null);
               setActiveMediaId(importedFeedbacks[0]?.media?.[0]?.id || null);
               setStorageStatus({
                 type: 'success',
                 message: `Imported ${importedFeedbacks.length} feedback item${importedFeedbacks.length === 1 ? '' : 's'}`
+              });
+              setConfirmDialog(null);
+            };
+
+            if (feedbacks.length === 0) {
+              doImport();
+            } else {
+              setConfirmDialog({
+                title: 'Replace current session?',
+                message: `Importing will replace your current ${feedbacks.length} feedback item${feedbacks.length === 1 ? '' : 's'} with ${importedFeedbacks.length} from the file.`,
+                confirmLabel: 'Replace',
+                danger: true,
+                onConfirm: doImport,
               });
             }
           } catch (err) {
@@ -605,13 +646,20 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
           setShowMenu(false);
           return;
         }
-        if (window.confirm(`Delete all ${feedbacks.length} feedback item${feedbacks.length === 1 ? '' : 's'}? This cannot be undone. Consider exporting your session first.`)) {
-          setFeedbacks([]);
-          setActiveFeedbackId(null);
-          setActiveMediaId(null);
-          setStorageStatus({ type: 'success', message: 'All feedback cleared' });
-        }
         setShowMenu(false);
+        setConfirmDialog({
+          title: 'Clear all data?',
+          message: `This will delete all ${feedbacks.length} feedback item${feedbacks.length === 1 ? '' : 's'} permanently. Consider exporting your session first as a backup.`,
+          confirmLabel: 'Clear all',
+          danger: true,
+          onConfirm: () => {
+            setFeedbacks([]);
+            setActiveFeedbackId(null);
+            setActiveMediaId(null);
+            setStorageStatus({ type: 'success', message: 'All feedback cleared' });
+            setConfirmDialog(null);
+          },
+        });
       };
 
       const handleZonePaste = async (e) => {
@@ -647,6 +695,41 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                 : 'bg-zinc-100/10 border-zinc-700 text-zinc-200'
             }`}>
               {storageStatus.message}
+            </div>
+          )}
+
+          {/* Confirmation dialog */}
+          {confirmDialog && (
+            <div
+              className="absolute inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-6"
+              onClick={() => setConfirmDialog(null)}
+            >
+              <div
+                className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl max-w-md w-full p-5"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="text-base font-semibold text-zinc-100 mb-2">{confirmDialog.title}</h3>
+                <p className="text-sm text-zinc-400 mb-5 leading-relaxed">{confirmDialog.message}</p>
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={confirmDialog.onConfirm}
+                    className={`px-4 py-2 rounded text-sm font-semibold transition ${
+                      confirmDialog.danger
+                        ? 'bg-red-500 hover:bg-red-600 text-white'
+                        : 'bg-zinc-100 hover:bg-white text-zinc-900'
+                    }`}
+                  >
+                    {confirmDialog.confirmLabel || 'Confirm'}
+                  </button>
+                  <button
+                    onClick={() => setConfirmDialog(null)}
+                    autoFocus
+                    className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-sm font-medium transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
