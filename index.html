@@ -1298,6 +1298,27 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                           ) : (
                             <div className="flex flex-col items-center w-full max-w-3xl">
                               <LinkViewer media={activeMedia} />
+                              {/* Explicit drop zone below the iframe. Some browsers fully scope drag
+                                  events to a cross-origin iframe's child document, so the global
+                                  drag handler can't see drops landing on top of Loom/YouTube/etc.
+                                  This zone always lives in our document and works reliably. */}
+                              <div
+                                onClick={() => fileInputRef.current.click()}
+                                onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                                onDrop={async (e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setIsDragging(false);
+                                  dragCounter.current = 0;
+                                  const files = Array.from(e.dataTransfer.files);
+                                  if (files.length) await addFiles(files);
+                                }}
+                                className="w-full mt-3 py-3 px-3 text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50 border border-dashed border-zinc-800 hover:border-zinc-600 rounded cursor-pointer flex items-center justify-center gap-2 transition"
+                                title="Click to choose a screenshot, or drag one in"
+                              >
+                                <Upload size={12} />
+                                Drop a screenshot here or click to upload
+                              </div>
                               <div className="w-full mt-4 bg-zinc-900 rounded border border-zinc-800 p-4">
                                 <textarea value={activeMedia.note || ''} onChange={(e) => updateMediaNote(activeMedia.id, applySmartReplace(e))} placeholder="Add a short note..." className="w-full text-sm text-zinc-100 bg-zinc-950 border border-zinc-800 rounded px-3 py-2 outline-none focus:border-zinc-500 focus:ring-2 focus:ring-zinc-500/20 transition resize-none placeholder:text-zinc-600" rows={3} />
                               </div>
