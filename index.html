@@ -891,10 +891,54 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       };
       const cancelEditAnnotation = () => { setEditingAnnotationId(null); setEditingNote(''); };
 
-      const handleDragEnter = (e) => { e.preventDefault(); e.stopPropagation(); dragCounter.current++; if (e.dataTransfer.items?.length > 0) setIsDragging(true); };
-      const handleDragLeave = (e) => { e.preventDefault(); e.stopPropagation(); dragCounter.current--; if (dragCounter.current === 0) setIsDragging(false); };
-      const handleDragOver = (e) => { e.preventDefault(); e.stopPropagation(); };
-      const handleDrop = async (e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); dragCounter.current = 0; await addFiles(Array.from(e.dataTransfer.files)); };
+      // Window-level capture-phase drag handlers. Required because cross-origin
+      // iframes (Loom, YouTube, etc.) can claim drag events before they bubble
+      // to our outer container — so listening on the outer div alone misses
+      // drops over the iframe area. Capture phase fires at window before any
+      // descendant gets a shot, and the file-type filter avoids interfering
+      // with in-page drags (text, etc.).
+      useEffect(() => {
+        const isFileDrag = (e) => e.dataTransfer?.types?.includes('Files');
+        const onEnter = (e) => {
+          if (!isFileDrag(e)) return;
+          e.preventDefault();
+          dragCounter.current++;
+          setIsDragging(true);
+        };
+        const onLeave = (e) => {
+          if (!isFileDrag(e)) return;
+          e.preventDefault();
+          dragCounter.current--;
+          // relatedTarget null means cursor truly left the window — force reset.
+          if (e.relatedTarget === null || dragCounter.current <= 0) {
+            dragCounter.current = 0;
+            setIsDragging(false);
+          }
+        };
+        const onOver = (e) => {
+          if (!isFileDrag(e)) return;
+          e.preventDefault();
+        };
+        const onDrop = async (e) => {
+          if (!isFileDrag(e)) return;
+          e.preventDefault();
+          e.stopPropagation();
+          dragCounter.current = 0;
+          setIsDragging(false);
+          const files = Array.from(e.dataTransfer.files);
+          if (files.length && addFilesRef.current) await addFilesRef.current(files);
+        };
+        window.addEventListener('dragenter', onEnter, true);
+        window.addEventListener('dragleave', onLeave, true);
+        window.addEventListener('dragover', onOver, true);
+        window.addEventListener('drop', onDrop, true);
+        return () => {
+          window.removeEventListener('dragenter', onEnter, true);
+          window.removeEventListener('dragleave', onLeave, true);
+          window.removeEventListener('dragover', onOver, true);
+          window.removeEventListener('drop', onDrop, true);
+        };
+      }, []);
 
       const exportHTML = () => { try { downloadFile(generateExportHTML(feedbacks), `feedback-report-${todayStr()}.html`, 'text/html;charset=utf-8'); } catch (err) { setStorageStatus({ type: 'error', message: 'Export failed: ' + err.message }); } };
 
@@ -969,7 +1013,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       };
 
       return (
-        <div className="flex h-screen bg-zinc-950 text-zinc-100 relative" onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDragOver={handleDragOver} onDrop={handleDrop}>
+        <div className="flex h-screen bg-zinc-950 text-zinc-100 relative">
           {isDragging && (
             <div className="absolute inset-0 z-50 bg-zinc-100/15 backdrop-blur-sm flex items-center justify-center">
               <div className="bg-zinc-900 rounded-lg shadow-2xl p-10 border-4 border-dashed border-zinc-300 pointer-events-none">
