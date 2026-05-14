@@ -208,6 +208,7 @@
     const Pencil = (p) => <Icon {...p}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></Icon>;
     const Sun = (p) => <Icon {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></Icon>;
     const Moon = (p) => <Icon {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></Icon>;
+    const ImageIcon = (p) => <Icon {...p}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></Icon>;
 
     // Floating-label tooltip used on icon-only and small-text buttons. Apply
     // `group relative` to the parent button and drop a <Tooltip> inside. Set
@@ -988,7 +989,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             className="group cursor-pointer border-2 border-dashed border-zinc-800 hover:border-zinc-500 focus:border-zinc-400 focus:outline-none rounded-lg bg-zinc-900/30 hover:bg-zinc-900/50 transition p-10"
           >
             <div className="w-14 h-14 mx-auto mb-3 rounded-md bg-zinc-800 group-hover:bg-zinc-700 flex items-center justify-center transition">
-              <Upload size={26} className="text-zinc-300" />
+              <Download size={26} className="text-zinc-300" />
             </div>
             <p className="font-semibold text-zinc-200 mb-1 text-base text-center">Drop screenshots here</p>
             <p className="text-xs text-zinc-500 text-center">or click to browse · paste with <kbd className="px-1.5 py-0.5 bg-zinc-800 rounded text-zinc-400 font-mono text-[10px]">⌘V</kbd></p>
@@ -1722,7 +1723,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
           {isDragging && (
             <div className="absolute inset-0 z-50 bg-zinc-100/15 backdrop-blur-sm flex items-center justify-center">
               <div className="bg-zinc-900 rounded-lg shadow-2xl p-10 border-4 border-dashed border-zinc-300 pointer-events-none">
-                <Upload size={56} className="text-zinc-200 mx-auto mb-4" />
+                <Download size={56} className="text-zinc-200 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-zinc-100 mb-1 text-center">Drop your screenshots here</h2>
                 <p className="text-zinc-400 text-center">Files will be added to {activeFeedback ? `"${displayTitle(activeFeedback)}"` : 'a new feedback'}</p>
               </div>
@@ -1977,7 +1978,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                     <div className="p-2.5 border-b border-zinc-800 space-y-1.5">
                       <div className="flex gap-1.5">
                         <button onClick={() => fileInputRef.current.click()} aria-label="Upload image" className="group relative flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded flex items-center justify-center transition">
-                          <Upload size={14} />
+                          <ImageIcon size={14} />
                           <Tooltip>Upload image</Tooltip>
                         </button>
                         {!showLinkInput && (
@@ -2028,7 +2029,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                           className={`rounded cursor-pointer transition border-2 border-dashed flex flex-col items-center justify-center gap-1 px-2 ${linkDropHover ? 'bg-[#3f8efc]/15 border-[#3f8efc] text-[#3f8efc]' : 'bg-zinc-900/30 border-zinc-700 text-zinc-500 hover:bg-zinc-900/60 hover:border-zinc-500 hover:text-zinc-300'}`}
                           title="Click to choose a screenshot, or drag one here"
                         >
-                          <Upload size={14} />
+                          <Download size={14} />
                           <div className="text-[10px] font-medium text-center leading-tight">{linkDropHover ? 'Release to add' : 'Drop or click to add screenshot / image'}</div>
                         </div>
                       </div>
