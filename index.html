@@ -29,6 +29,66 @@
     @keyframes tip-fade { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
     .animate-tip-fade { animation: tip-fade 360ms ease-out; }
 
+    /* ---------- Dark theme overrides ----------
+       Activated by data-theme="dark" on the <html> element. Shifts the neutral
+       zinc Tailwind utilities to a blue-tinted slate palette so the UI reads
+       cooler / less greige. Primary buttons (bg-zinc-100) flip from white to
+       the accent blue for a more product-like feel. The accent blue (#3f8efc)
+       and red still stand out against the cooler surface tones.
+    */
+    [data-theme="dark"] { color-scheme: dark; }
+
+    /* Surfaces — blue-tinted dark */
+    [data-theme="dark"] .bg-zinc-950 { background-color: #0a0f1c !important; }
+    [data-theme="dark"] .bg-zinc-900 { background-color: #13192a !important; }
+    [data-theme="dark"] .bg-zinc-800 { background-color: #1e2638 !important; }
+    [data-theme="dark"] .bg-zinc-700 { background-color: #2d3548 !important; }
+    [data-theme="dark"] .hover\:bg-zinc-900:hover { background-color: #13192a !important; }
+    [data-theme="dark"] .hover\:bg-zinc-800:hover { background-color: #232c40 !important; }
+    [data-theme="dark"] .hover\:bg-zinc-700:hover { background-color: #374257 !important; }
+
+    /* Translucent variants — keep the same hue, adjust alpha */
+    [data-theme="dark"] .bg-zinc-900\/40 { background-color: rgba(19, 25, 42, 0.4) !important; }
+    [data-theme="dark"] .bg-zinc-900\/30 { background-color: rgba(19, 25, 42, 0.3) !important; }
+    [data-theme="dark"] .bg-zinc-900\/50 { background-color: rgba(19, 25, 42, 0.5) !important; }
+    [data-theme="dark"] .hover\:bg-zinc-900\/40:hover { background-color: rgba(19, 25, 42, 0.55) !important; }
+    [data-theme="dark"] .hover\:bg-zinc-900\/60:hover { background-color: rgba(19, 25, 42, 0.6) !important; }
+    [data-theme="dark"] .hover\:bg-zinc-900\/70:hover { background-color: rgba(19, 25, 42, 0.7) !important; }
+    [data-theme="dark"] .bg-zinc-800\/50 { background-color: rgba(30, 38, 56, 0.5) !important; }
+    [data-theme="dark"] .hover\:bg-zinc-800\/50:hover { background-color: rgba(30, 38, 56, 0.7) !important; }
+    [data-theme="dark"] .bg-zinc-800\/60 { background-color: rgba(30, 38, 56, 0.6) !important; }
+    [data-theme="dark"] .hover\:bg-zinc-800\/30:hover { background-color: rgba(30, 38, 56, 0.3) !important; }
+    [data-theme="dark"] .hover\:bg-zinc-800\/60:hover { background-color: rgba(30, 38, 56, 0.6) !important; }
+    [data-theme="dark"] .bg-zinc-950\/50 { background-color: rgba(10, 15, 28, 0.5) !important; }
+    [data-theme="dark"] .hover\:bg-zinc-950:hover { background-color: #0a0f1c !important; }
+    [data-theme="dark"] .focus\:bg-zinc-950:focus { background-color: #0a0f1c !important; }
+
+    /* Borders — subtle blue-tinted gray, no full black lines */
+    [data-theme="dark"] .border-zinc-900 { border-color: #1a2138 !important; }
+    [data-theme="dark"] .border-zinc-800 { border-color: #252d44 !important; }
+    [data-theme="dark"] .border-zinc-700 { border-color: #374257 !important; }
+    [data-theme="dark"] .border-zinc-700\/60 { border-color: rgba(55, 66, 87, 0.6) !important; }
+    [data-theme="dark"] .divide-zinc-800\/70 > * + * { border-color: rgba(37, 45, 68, 0.7) !important; }
+
+    /* Text — slate equivalents (slightly cooler than zinc) */
+    [data-theme="dark"] .text-zinc-300 { color: #cbd5e1 !important; }
+    [data-theme="dark"] .text-zinc-400 { color: #94a3b8 !important; }
+    [data-theme="dark"] .text-zinc-500 { color: #64748b !important; }
+    [data-theme="dark"] .text-zinc-600 { color: #475569 !important; }
+
+    /* Primary buttons (bg-zinc-100 + text-zinc-900) → solid blue + white text.
+       This pattern is used by New Feedback, Export, and active Annotate. */
+    [data-theme="dark"] .bg-zinc-100 { background-color: #3f8efc !important; }
+    [data-theme="dark"] .hover\:bg-white:hover { background-color: #5a9efd !important; }
+    [data-theme="dark"] .text-zinc-900 { color: #ffffff !important; }
+
+    /* Scrollbar — match the new surface tones */
+    [data-theme="dark"] ::-webkit-scrollbar-track { background: #0a0f1c; }
+    [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #1e2638; border: 2px solid #0a0f1c; }
+    [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #2d3548; }
+    [data-theme="dark"] ::-webkit-scrollbar-corner { background: #0a0f1c; }
+    [data-theme="dark"] * { scrollbar-color: #1e2638 #0a0f1c; }
+
     /* ---------- Light theme overrides ----------
        Activated by data-theme="light" on the <html> element (toggled by a
        useEffect when the theme state changes). The app is built dark-first
@@ -40,7 +100,7 @@
     [data-theme="light"] { color-scheme: light; }
 
     /* Surfaces — invert zinc scale */
-    [data-theme="light"] .bg-zinc-950 { background-color: #ffffff !important; }
+    [data-theme="light"] .bg-zinc-950 { background-color: #f8fafc !important; }
     [data-theme="light"] .bg-zinc-900 { background-color: #fafafa !important; }
     [data-theme="light"] .bg-zinc-800 { background-color: #f4f4f5 !important; }
     [data-theme="light"] .bg-zinc-700 { background-color: #e4e4e7 !important; }
@@ -1069,6 +1129,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const [bottomCollapsed, setBottomCollapsed] = useState(false);
       const [showPreview, setShowPreview] = useState(false);
       const [showMenu, setShowMenu] = useState(false);
+      const [showExportMenu, setShowExportMenu] = useState(false);
       const [storageStatus, setStorageStatus] = useState(null);
       const [confirmDialog, setConfirmDialog] = useState(null);
       const [linkUrl, setLinkUrl] = useState('');
@@ -1114,6 +1175,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const imageRef = useRef(null);
       const addFilesRef = useRef(null);
       const menuRef = useRef(null);
+      const exportMenuRef = useRef(null);
       const linkInputRef = useRef(null);
       const overallNoteRef = useRef(null);
       const titleInputRef = useRef(null);
@@ -1160,6 +1222,13 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         document.addEventListener('mousedown', h);
         return () => document.removeEventListener('mousedown', h);
       }, [showMenu]);
+
+      useEffect(() => {
+        if (!showExportMenu) return;
+        const h = (e) => { if (exportMenuRef.current && !exportMenuRef.current.contains(e.target)) setShowExportMenu(false); };
+        document.addEventListener('mousedown', h);
+        return () => document.removeEventListener('mousedown', h);
+      }, [showExportMenu]);
 
       // Click anywhere outside the Paste-URL field closes it (same as Cancel).
       useEffect(() => {
@@ -1222,12 +1291,13 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       useEffect(() => {
         const onKey = (e) => {
           if (e.key !== 'Escape') return;
+          if (showExportMenu) { setShowExportMenu(false); return; }
           if (showPreview) { setShowPreview(false); return; }
           if (showMenu) { setShowMenu(false); return; }
         };
         document.addEventListener('keydown', onKey);
         return () => document.removeEventListener('keydown', onKey);
-      }, [showPreview, showMenu]);
+      }, [showPreview, showMenu, showExportMenu]);
 
       // Focus the title input when a new feedback is created.
       useEffect(() => {
@@ -1621,15 +1691,41 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setShowPreview(false)} className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-sm font-medium flex items-center gap-1.5 transition"><X size={14} />Close</button>
-                  <button onClick={exportCSV} aria-label="Open in Google Sheets, Excel, etc." className="group relative px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-sm font-medium flex items-center gap-1.5 transition">
-                    <Download size={14} />Export CSV
-                    <Tooltip>Open in Google Sheets, Excel, etc.</Tooltip>
-                  </button>
-                  <button onClick={exportXLSX} aria-label="Spreadsheet with embedded images" className="group relative px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-sm font-medium flex items-center gap-1.5 transition">
-                    <Download size={14} />Export XLSX
-                    <Tooltip>Spreadsheet with embedded images</Tooltip>
-                  </button>
-                  <button onClick={exportHTML} className="px-4 py-2 bg-zinc-100 hover:bg-white text-zinc-900 rounded text-sm font-semibold flex items-center gap-1.5 transition shadow-lg"><Download size={14} />Export HTML</button>
+                  <div className="relative" ref={exportMenuRef}>
+                    <button onClick={() => setShowExportMenu(v => !v)} aria-haspopup="menu" aria-expanded={showExportMenu} className="px-4 py-2 bg-zinc-100 hover:bg-white text-zinc-900 rounded text-sm font-semibold flex items-center gap-1.5 transition shadow-lg">
+                      <Download size={14} />Export <ChevronDown size={14} className={`transition-transform ${showExportMenu ? 'rotate-180' : ''}`} />
+                    </button>
+                    {showExportMenu && (
+                      <div role="menu" className="absolute right-0 top-full mt-2 w-80 bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl z-30 py-1 overflow-hidden">
+                        <button role="menuitem" onClick={() => { setShowExportMenu(false); exportHTML(); }} className="w-full px-3 py-3 text-left hover:bg-zinc-800 flex items-start gap-3 transition">
+                          <Download size={16} className="text-[#3f8efc] mt-0.5 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <div className="text-sm font-semibold text-zinc-100">HTML Report</div>
+                              <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-[#3f8efc]/15 text-[#3f8efc] border border-[#3f8efc]/30">Recommended</span>
+                            </div>
+                            <div className="text-xs text-zinc-500 mt-0.5">With embedded screenshots and annotations</div>
+                          </div>
+                        </button>
+                        <div className="border-t border-zinc-800/70 mx-3" />
+                        <button role="menuitem" onClick={() => { setShowExportMenu(false); exportXLSX(); }} className="w-full px-3 py-3 text-left hover:bg-zinc-800 flex items-start gap-3 transition">
+                          <Download size={16} className="text-zinc-400 mt-0.5 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-zinc-100">XLSX</div>
+                            <div className="text-xs text-zinc-500 mt-0.5">Spreadsheet with embedded thumbnails</div>
+                          </div>
+                        </button>
+                        <div className="border-t border-zinc-800/70 mx-3" />
+                        <button role="menuitem" onClick={() => { setShowExportMenu(false); exportCSV(); }} className="w-full px-3 py-3 text-left hover:bg-zinc-800 flex items-start gap-3 transition">
+                          <Download size={16} className="text-zinc-400 mt-0.5 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-zinc-100">CSV</div>
+                            <div className="text-xs text-zinc-500 mt-0.5">Use this if your images are hosted elsewhere and linked here (e.g. Google Drive)</div>
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               {!authorName.trim() && !authorNudgeDismissed && (
@@ -1933,7 +2029,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                                   </button>
                                 )}
                                 <div className="relative">
-                                  <button onClick={() => { setAnnotationMode(!annotationMode); if (showAnnotateTip) setShowAnnotateTip(false); }} className={`px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition ${annotationMode ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-100 text-zinc-900 hover:bg-white shadow-lg'}`}>
+                                  <button onClick={() => { if (annotationMode) setShowAnnotations(false); setAnnotationMode(!annotationMode); if (showAnnotateTip) setShowAnnotateTip(false); }} className={`px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition ${annotationMode ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-100 text-zinc-900 hover:bg-white shadow-lg'}`}>
                                     {annotationMode ? <X size={14} /> : <Edit3 size={14} />}
                                     {annotationMode ? 'Exit Annotate' : 'Annotate'}
                                   </button>
