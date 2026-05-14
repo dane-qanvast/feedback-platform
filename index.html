@@ -26,6 +26,95 @@
     .animate-coach-in-down { animation: coach-in-down 220ms cubic-bezier(0.16, 1, 0.3, 1); transform-origin: top right; }
     @keyframes coach-in-up { from { opacity: 0; transform: translateY(6px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
     .animate-coach-in-up { animation: coach-in-up 220ms cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom center; }
+    @keyframes tip-fade { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-tip-fade { animation: tip-fade 360ms ease-out; }
+
+    /* ---------- Light theme overrides ----------
+       Activated by data-theme="light" on the <html> element (toggled by a
+       useEffect when the theme state changes). The app is built dark-first
+       with hardcoded Tailwind zinc utilities, so light mode flips the scale
+       via class-targeted overrides rather than refactoring every JSX className.
+       The accent blue (#3f8efc), reds, and overlay backgrounds (bg-black/X)
+       stay the same in both themes.
+    */
+    [data-theme="light"] { color-scheme: light; }
+
+    /* Surfaces — invert zinc scale */
+    [data-theme="light"] .bg-zinc-950 { background-color: #ffffff !important; }
+    [data-theme="light"] .bg-zinc-900 { background-color: #fafafa !important; }
+    [data-theme="light"] .bg-zinc-800 { background-color: #f4f4f5 !important; }
+    [data-theme="light"] .bg-zinc-700 { background-color: #e4e4e7 !important; }
+    [data-theme="light"] .bg-zinc-100 { background-color: #18181b !important; }   /* primary buttons flip to dark */
+    [data-theme="light"] .hover\:bg-zinc-900:hover { background-color: #f4f4f5 !important; }
+    [data-theme="light"] .hover\:bg-zinc-800:hover { background-color: #e4e4e7 !important; }
+    [data-theme="light"] .hover\:bg-zinc-700:hover { background-color: #d4d4d8 !important; }
+    [data-theme="light"] .hover\:bg-white:hover { background-color: #27272a !important; }   /* primary button hover flips dark */
+    [data-theme="light"] .bg-zinc-900\/40 { background-color: rgba(244, 244, 245, 0.6) !important; }
+    [data-theme="light"] .hover\:bg-zinc-900\/40:hover { background-color: rgba(228, 228, 231, 0.7) !important; }
+    [data-theme="light"] .bg-zinc-900\/30 { background-color: rgba(244, 244, 245, 0.5) !important; }
+    [data-theme="light"] .hover\:bg-zinc-900\/60:hover { background-color: rgba(228, 228, 231, 0.8) !important; }
+    [data-theme="light"] .hover\:bg-zinc-900\/70:hover { background-color: rgba(228, 228, 231, 0.85) !important; }
+    [data-theme="light"] .bg-zinc-900\/50 { background-color: rgba(244, 244, 245, 0.6) !important; }
+    [data-theme="light"] .hover\:bg-zinc-800\/30:hover { background-color: rgba(228, 228, 231, 0.5) !important; }
+    [data-theme="light"] .hover\:bg-zinc-800\/60:hover { background-color: rgba(228, 228, 231, 0.7) !important; }
+    [data-theme="light"] .bg-zinc-800\/60 { background-color: rgba(228, 228, 231, 0.6) !important; }
+
+    /* Text — invert zinc scale */
+    [data-theme="light"] .text-zinc-100 { color: #18181b !important; }
+    [data-theme="light"] .text-zinc-200 { color: #27272a !important; }
+    [data-theme="light"] .text-zinc-300 { color: #3f3f46 !important; }
+    [data-theme="light"] .text-zinc-400 { color: #52525b !important; }
+    [data-theme="light"] .text-zinc-500 { color: #71717a !important; }
+    [data-theme="light"] .text-zinc-600 { color: #a1a1aa !important; }
+    [data-theme="light"] .text-zinc-900 { color: #fafafa !important; }   /* primary button text flips */
+    [data-theme="light"] .hover\:text-zinc-200:hover { color: #18181b !important; }
+    [data-theme="light"] .hover\:text-zinc-300:hover { color: #27272a !important; }
+    [data-theme="light"] .hover\:text-white:hover { color: #18181b !important; }
+    [data-theme="light"] .placeholder\:text-zinc-500::placeholder { color: #a1a1aa !important; }
+    [data-theme="light"] .placeholder\:text-zinc-600::placeholder { color: #d4d4d8 !important; }
+
+    /* Borders */
+    [data-theme="light"] .border-zinc-900 { border-color: #e4e4e7 !important; }
+    [data-theme="light"] .border-zinc-800 { border-color: #e4e4e7 !important; }
+    [data-theme="light"] .border-zinc-700 { border-color: #d4d4d8 !important; }
+    [data-theme="light"] .border-zinc-700\/60 { border-color: rgba(212, 212, 216, 0.6) !important; }
+    [data-theme="light"] .border-zinc-300 { border-color: #d4d4d8 !important; }
+    [data-theme="light"] .divide-zinc-800\/70 > * + * { border-color: rgba(228, 228, 231, 0.7) !important; }
+    [data-theme="light"] .focus\:border-zinc-400:focus { border-color: #71717a !important; }
+    [data-theme="light"] .focus\:border-zinc-500:focus { border-color: #52525b !important; }
+    [data-theme="light"] .hover\:border-zinc-500:hover { border-color: #71717a !important; }
+    [data-theme="light"] .hover\:border-zinc-600:hover { border-color: #52525b !important; }
+
+    /* Focus rings */
+    [data-theme="light"] .focus\:ring-zinc-400\/20:focus { box-shadow: 0 0 0 2px rgba(82, 82, 91, 0.2) !important; }
+    [data-theme="light"] .focus\:ring-zinc-400\/30:focus { box-shadow: 0 0 0 2px rgba(82, 82, 91, 0.3) !important; }
+    [data-theme="light"] .focus\:ring-zinc-400\/40:focus { box-shadow: 0 0 0 2px rgba(82, 82, 91, 0.4) !important; }
+    [data-theme="light"] .focus\:ring-zinc-500\/20:focus { box-shadow: 0 0 0 2px rgba(113, 113, 122, 0.2) !important; }
+    [data-theme="light"] .focus\:ring-zinc-500\/30:focus { box-shadow: 0 0 0 2px rgba(113, 113, 122, 0.3) !important; }
+
+    /* Accent pieces that look off in light mode get tuned down */
+    [data-theme="light"] .bg-\[\#3f8efc\]\/10 { background-color: rgba(63, 142, 252, 0.08) !important; }
+    [data-theme="light"] .text-\[\#3f8efc\]\/60 { color: rgba(63, 142, 252, 0.85) !important; }
+
+    /* Annotation panel — translucent zinc/yellow shades need their own overrides
+       because the /XX opacity classes don't match the plain bg-zinc-NNN selectors. */
+    [data-theme="light"] .bg-zinc-800\/50 { background-color: rgba(244, 244, 245, 0.8) !important; }
+    [data-theme="light"] .hover\:bg-zinc-800\/50:hover { background-color: rgba(228, 228, 231, 0.9) !important; }
+    [data-theme="light"] .bg-yellow-500\/10 { background-color: rgba(245, 158, 11, 0.12) !important; }
+    [data-theme="light"] .border-yellow-500\/30 { border-color: rgba(245, 158, 11, 0.45) !important; }
+    [data-theme="light"] .text-yellow-400 { color: #b45309 !important; }
+
+    /* Bottom-panel title input — uses bg-zinc-950/50 + hover/focus variants */
+    [data-theme="light"] .bg-zinc-950\/50 { background-color: rgba(255, 255, 255, 0.6) !important; }
+    [data-theme="light"] .hover\:bg-zinc-950:hover { background-color: #ffffff !important; }
+    [data-theme="light"] .focus\:bg-zinc-950:focus { background-color: #ffffff !important; }
+
+    /* Scrollbars — flip the dark zinc track/thumb to light equivalents */
+    [data-theme="light"] ::-webkit-scrollbar-track { background: #fafafa; }
+    [data-theme="light"] ::-webkit-scrollbar-thumb { background: #d4d4d8; border: 2px solid #fafafa; }
+    [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+    [data-theme="light"] ::-webkit-scrollbar-corner { background: #fafafa; }
+    [data-theme="light"] * { scrollbar-color: #d4d4d8 #fafafa; }
   </style>
 </head>
 <body>
@@ -56,11 +145,22 @@
     const Trash = (p) => <Icon {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></Icon>;
     const Link2 = (p) => <Icon {...p}><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></Icon>;
     const ExternalLink = (p) => <Icon {...p}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></Icon>;
-    const HelpCircle = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></Icon>;
     const Pencil = (p) => <Icon {...p}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></Icon>;
+    const Sun = (p) => <Icon {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></Icon>;
+    const Moon = (p) => <Icon {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></Icon>;
+
+    // Floating-label tooltip used on icon-only and small-text buttons. Apply
+    // `group relative` to the parent button and drop a <Tooltip> inside. Set
+    // `anchor="right"` for buttons sitting against the right edge of a column
+    // so the label doesn't clip off-screen.
+    const Tooltip = ({ children, anchor = 'center' }) => (
+      <span className={`pointer-events-none absolute top-full ${anchor === 'right' ? 'right-0' : 'left-1/2 -translate-x-1/2'} mt-1.5 px-2 py-1 bg-zinc-950 text-zinc-100 text-[11px] font-medium rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-30 border border-zinc-700 shadow-lg`}>{children}</span>
+    );
 
     const ANNOTATION_MAX_LENGTH = 200;
     const STORAGE_KEY = 'feedback-platform-data';
+    const AUTHOR_KEY = 'feedback-platform-author-name';
+    const THEME_KEY = 'feedback-platform-theme';
 
     // Robust unique ID — avoids collisions from rapid Date.now() calls in the same tick.
     let _uidCounter = 0;
@@ -79,6 +179,18 @@
     };
     const escapeHtml = (str) => str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;') : '';
     const todayStr = () => new Date().toISOString().split('T')[0];
+    // Produces a filename-safe suffix from the author name, e.g. "Dr. Alex Smith"
+    // → "-dr-alex-smith". Returns an empty string when the name is blank or has
+    // no usable characters, so the caller can interpolate unconditionally.
+    const authorSuffix = (name) => {
+      const slug = (name || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 40);
+      return slug ? `-${slug}` : '';
+    };
     const nextAnnotationNumber = (annotations) => annotations.length ? Math.max(...annotations.map(a => a.number)) + 1 : 1;
     const displayTitle = (fb) => (fb?.title || '').trim() || 'Untitled';
 
@@ -193,11 +305,15 @@
       };
     };
 
-    const buildFeedbackPrompt = (fb) => {
+    const buildFeedbackPrompt = (fb, author) => {
       const lines = [];
       // Context header so the AI/developer knows what they're looking at.
       // The developer adds their own task after pasting (fix, ticket, summarize, etc).
       lines.push('Feedback collected from a UI/UX feedback session. Numbered items under each screenshot are markers placed at specific positions on the image. Screenshot files are not attached — attach separately if visual context is needed.');
+      if (author && author.trim()) {
+        lines.push('');
+        lines.push(`Submitted by ${author.trim()}.`);
+      }
       lines.push('');
       lines.push('---');
       lines.push('');
@@ -234,7 +350,272 @@
       return lines.join('\n');
     };
 
-    const generateExportHTML = (data) => {
+    // ---------- CSV export ----------
+    // Quotes a cell only when needed (commas, quotes, or newlines). Doubled
+    // quotes inside the string per RFC 4180.
+    const csvEscape = (val) => {
+      const s = val == null ? '' : String(val);
+      return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const csvRow = (cols) => cols.map(csvEscape).join(',');
+
+    // Flat row-per-annotation export. Media without annotations and feedbacks
+    // without media still get a row each so nothing in the session is dropped.
+    // BOM + CRLF gives Google Sheets and Excel clean UTF-8 handling.
+    //
+    // The Media cell is rendered as a HYPERLINK formula (clickable in Sheets/
+    // Excel). For image rows the URL is the data URI; for link rows it's the
+    // external URL. Google Sheets caps cells at 50,000 chars — most full-size
+    // screenshots will exceed that, so the size guard falls back to a plain
+    // text filename when the formula wouldn't fit.
+    const SHEET_CELL_LIMIT = 49000;
+    const sheetHyperlink = (url, label) => {
+      const safeLabel = String(label || '').replace(/"/g, '""');
+      if (!url || (url.length + safeLabel.length + 18) > SHEET_CELL_LIMIT) return label || '';
+      const safeUrl = String(url).replace(/"/g, '""');
+      return `=HYPERLINK("${safeUrl}","${safeLabel}")`;
+    };
+    const generateExportCSV = (data, author = '') => {
+      const date = new Date().toLocaleDateString();
+      const rows = [csvRow(['Feedback #', 'Title', 'Overall feedback', 'Media', 'Type', 'Annotation #', 'Annotation', 'Author', 'Date'])];
+      data.forEach((fb, fbIdx) => {
+        const num = String(fbIdx + 1).padStart(2, '0');
+        const title = (fb.title || '').trim() || 'Untitled';
+        const note = fb.overallNote || '';
+        if (!fb.media || fb.media.length === 0) {
+          rows.push(csvRow([num, title, note, '', '', '', '', author, date]));
+          return;
+        }
+        fb.media.forEach(m => {
+          const isLink = m.type === 'link';
+          const url = isLink ? m.url : m.dataUrl;
+          const label = isLink ? (m.url || '') : (m.name || 'image');
+          const mediaCell = sheetHyperlink(url, label);
+          const mediaType = isLink ? 'link' : 'image';
+          if (m.type === 'image' && Array.isArray(m.annotations) && m.annotations.length > 0) {
+            m.annotations.forEach(a => {
+              rows.push(csvRow([num, title, note, mediaCell, mediaType, a.number, a.note || '', author, date]));
+            });
+          } else {
+            rows.push(csvRow([num, title, note, mediaCell, mediaType, '', '', author, date]));
+          }
+        });
+      });
+      return '\uFEFF' + rows.join('\r\n');
+    };
+
+    // ---------- XLSX export (embedded images) ----------
+    // ExcelJS is lazy-loaded on first XLSX export so the ~830KB library doesn't
+    // cost initial page weight. Promise is memoised so concurrent clicks share
+    // one load.
+    let exceljsPromise = null;
+    const loadExcelJS = () => {
+      if (window.ExcelJS) return Promise.resolve();
+      if (exceljsPromise) return exceljsPromise;
+      exceljsPromise = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+        s.onload = () => resolve();
+        s.onerror = () => { exceljsPromise = null; reject(new Error('Failed to load ExcelJS — check your network connection')); };
+        document.head.appendChild(s);
+      });
+      return exceljsPromise;
+    };
+
+    // Pull `png` / `jpg` / `gif` / `webp` out of a data URI. ExcelJS rejects
+    // anything it doesn't recognise so we filter unknown types upstream.
+    const imageExtFromDataUrl = (dataUrl) => {
+      const m = /^data:image\/(png|jpe?g|gif|webp);/i.exec(dataUrl || '');
+      if (!m) return null;
+      const ext = m[1].toLowerCase();
+      return ext === 'jpeg' ? 'jpg' : ext;
+    };
+
+    // Resolve natural dimensions so we can preserve aspect ratio in the sheet.
+    // Cached per data URI inside the generator to avoid re-decoding the same
+    // screenshot when it appears in multiple annotation rows.
+    const measureImage = (dataUrl) => new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+      img.onerror = () => reject(new Error('Could not decode image'));
+      img.src = dataUrl;
+    });
+
+    // Composite numbered markers onto an image at the annotation coordinates
+    // and return a fresh PNG data URI. Markers render red filled circle + white
+    // ring + white number, with a soft drop shadow so they read on busy
+    // backgrounds. Matches the in-app marker styling.
+    const burnAnnotations = (dataUrl, annotations) => new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          // Marker sizing scales with the smaller image dimension so it reads
+          // well on both tiny icons and full-page screenshots.
+          const minDim = Math.min(canvas.width, canvas.height);
+          const radius = Math.max(14, minDim * 0.022);
+          const ringWidth = Math.max(2, radius * 0.18);
+          const fontSize = radius * 1.05;
+          for (const a of annotations) {
+            const x = Math.max(0, Math.min(100, a.x || 0)) / 100 * canvas.width;
+            const y = Math.max(0, Math.min(100, a.y || 0)) / 100 * canvas.height;
+            // Drop shadow for the filled disk so it sits on top of any background.
+            ctx.save();
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+            ctx.shadowBlur = ringWidth * 2.5;
+            ctx.shadowOffsetY = ringWidth * 0.5;
+            ctx.fillStyle = '#ef4444'; // red-500, matches the in-app marker
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            // White ring on top, no shadow.
+            ctx.lineWidth = ringWidth;
+            ctx.strokeStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            // Number.
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, system-ui, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(String(a.number), x, y);
+          }
+          resolve(canvas.toDataURL('image/png'));
+        } catch (err) {
+          reject(err);
+        }
+      };
+      img.onerror = () => reject(new Error('Could not decode image for burn-in'));
+      img.src = dataUrl;
+    });
+
+    // Build an XLSX Blob with embedded images. Row model mirrors the CSV
+    // (one row per annotation, one row per image without annotations, one
+    // row per feedback without media). Same image referenced from multiple
+    // rows is added once via wb.addImage and anchored multiple times via
+    // ws.addImage to keep the file lean.
+    const generateXLSXBlob = async (data, author = '') => {
+      const ExcelJS = window.ExcelJS;
+      if (!ExcelJS) throw new Error('ExcelJS not loaded');
+      const wb = new ExcelJS.Workbook();
+      wb.creator = author || 'Feedback Compiler';
+      wb.created = new Date();
+      const ws = wb.addWorksheet('Feedback');
+      ws.columns = [
+        { header: 'Feedback #', width: 12 },
+        { header: 'Title', width: 24 },
+        { header: 'Overall feedback', width: 40 },
+        { header: 'Media', width: 32 },
+        { header: 'Type', width: 10 },
+        { header: 'Annotation #', width: 14 },
+        { header: 'Annotation', width: 40 },
+        { header: 'Author', width: 14 },
+        { header: 'Date', width: 12 },
+      ];
+      // Style the header row.
+      const headerRow = ws.getRow(1);
+      headerRow.font = { bold: true };
+      headerRow.height = 22;
+      headerRow.alignment = { vertical: 'middle' };
+
+      // Default text wrapping + top alignment looks much better with images
+      // and long annotation notes.
+      const wrapAlign = { vertical: 'top', wrapText: true };
+
+      // Per-media cache. We key by m.id (not m.dataUrl) because two media items
+      // could theoretically share the same source dataUrl with different
+      // annotation sets — keying by media id keeps each burned variant separate.
+      // Each entry: { imageId, dims } resolved during the pre-pass below.
+      const mediaImageMap = new Map();
+      const annotatedMedia = [];
+      data.forEach(fb => (fb.media || []).forEach(m => {
+        if (m.type !== 'link' && m.dataUrl && imageExtFromDataUrl(m.dataUrl)) {
+          annotatedMedia.push(m);
+        }
+      }));
+      // For each image: burn markers in if it has annotations, then measure
+      // dimensions, then register with the workbook. Run in parallel.
+      await Promise.all(annotatedMedia.map(async (m) => {
+        let effectiveUrl = m.dataUrl;
+        let ext = imageExtFromDataUrl(m.dataUrl);
+        if (m.annotations && m.annotations.length > 0) {
+          try {
+            effectiveUrl = await burnAnnotations(m.dataUrl, m.annotations);
+            ext = 'png'; // canvas.toDataURL always produces PNG
+          } catch { /* fall back to source on burn failure */ }
+        }
+        let dims = null;
+        try { dims = await measureImage(effectiveUrl); } catch {}
+        const imageId = wb.addImage({ base64: effectiveUrl, extension: ext });
+        mediaImageMap.set(m.id, { imageId, dims });
+      }));
+
+      const TARGET_W = 200;
+      const MAX_H = 140;
+      const date = new Date().toLocaleDateString();
+
+      data.forEach((fb, fbIdx) => {
+        const num = String(fbIdx + 1).padStart(2, '0');
+        const title = (fb.title || '').trim() || 'Untitled';
+        const note = fb.overallNote || '';
+        if (!fb.media || fb.media.length === 0) {
+          const r = ws.addRow([num, title, note, '', '', '', '', author, date]);
+          r.alignment = wrapAlign;
+          return;
+        }
+        fb.media.forEach(m => {
+          const isLink = m.type === 'link';
+          const mediaType = isLink ? 'link' : 'image';
+          const info = mediaImageMap.get(m.id);
+          const annotations = (m.annotations && m.annotations.length) ? m.annotations : [null];
+          annotations.forEach(a => {
+            const aNum = a ? a.number : '';
+            const aNote = a ? (a.note || '') : '';
+            const row = ws.addRow([num, title, note, '', mediaType, aNum, aNote, author, date]);
+            row.alignment = wrapAlign;
+            const mediaCell = row.getCell(4);
+            if (isLink && m.url) {
+              mediaCell.value = { text: m.url, hyperlink: m.url };
+              mediaCell.font = { color: { argb: 'FF0563C1' }, underline: 'single' };
+            } else if (info) {
+              const dims = info.dims;
+              // Default to TARGET_W x MAX_H if we couldn't measure (will stretch slightly).
+              let w = TARGET_W, h = MAX_H;
+              if (dims) {
+                const aspect = dims.h / dims.w;
+                w = TARGET_W;
+                h = TARGET_W * aspect;
+                if (h > MAX_H) { h = MAX_H; w = MAX_H / aspect; }
+              }
+              // ExcelJS uses 0-indexed row/col; current row number is 1-indexed,
+              // so we subtract 1 to get the top-left anchor.
+              ws.addImage(info.imageId, {
+                tl: { col: 3, row: row.number - 1 },
+                ext: { width: w, height: h },
+              });
+              // Row height is in points (~px * 0.75). Add a small pad so the image
+              // doesn't kiss the cell borders.
+              row.height = Math.max(row.height || 0, (h + 8) * 0.75);
+              mediaCell.value = m.name || '';
+            } else {
+              // Unknown / missing image — just show the filename text.
+              mediaCell.value = m.name || '';
+            }
+          });
+        });
+      });
+
+      const buffer = await wb.xlsx.writeBuffer();
+      return new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    };
+
+    const generateExportHTML = (data, author = '') => {
       const feedbacksHTML = data.map((fb, fbIdx) => {
         const mediaHTML = fb.media.map((m, mIdx) => {
           const scopeId = `f${fbIdx}-m${mIdx}`;
@@ -267,7 +648,7 @@
       // Build prompts JSON keyed by feedback id. Escape < so any user-typed
       // closing-script sequence in notes can't terminate the embedded JSON block.
       const prompts = {};
-      data.forEach(fb => { prompts[fb.id] = buildFeedbackPrompt(fb); });
+      data.forEach(fb => { prompts[fb.id] = buildFeedbackPrompt(fb, author); });
       const promptsJson = JSON.stringify(prompts).replace(/</g, '\\u003c');
 
       return `<!DOCTYPE html>
@@ -321,6 +702,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .feedback-section.is-done .done-toggle { color: #3f8efc; }
 .done-counter { margin-top: 12px; font-size: 13px; color: #d4d4d8; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; background: rgba(63, 142, 252, 0.12); border: 1px solid rgba(63, 142, 252, 0.25); border-radius: 999px; }
 .done-counter::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #3f8efc; }
+.submitted-by { margin-top: 6px; font-size: 13px; color: #a1a1aa; }
+.submitted-by::before { content: ''; display: inline-block; width: 12px; height: 12px; vertical-align: -2px; margin-right: 6px; background: #71717a; mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>"); mask-repeat: no-repeat; mask-position: center; -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>"); -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
 .overall-note { background: rgba(250, 250, 250, 0.04); border-left: 4px solid #71717a; padding: 16px 20px; border-radius: 4px; margin-bottom: 24px; }
 .overall-note h3 { font-size: 14px; color: #a1a1aa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 .overall-note p { color: #e4e4e7; white-space: pre-wrap; }
@@ -356,7 +739,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .empty { color: #71717a; font-style: italic; }
 </style></head><body>
 <div class="container">
-<div class="report-header"><h1>Feedback Report</h1><div class="meta">Generated ${new Date().toLocaleString()} • ${data.length} feedback item${data.length !== 1 ? 's' : ''}</div><div class="done-counter" data-done-counter>0 of ${data.length} done</div></div>
+<div class="report-header"><h1>Feedback Report</h1><div class="meta">Generated ${new Date().toLocaleString()} • ${data.length} feedback item${data.length !== 1 ? 's' : ''}</div>${author && author.trim() ? `<div class="submitted-by">Submitted by ${escapeHtml(author.trim())}</div>` : ''}<div class="done-counter" data-done-counter>0 of ${data.length} done</div></div>
 ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
 </div>
 <script type="application/json" data-prompts>${promptsJson}<\/script>
@@ -515,8 +898,11 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
 </body></html>`;
     };
 
+    // Accepts either string content + mimeType (wrapped in a Blob) or a Blob
+    // directly. Cleans up the object URL on a short delay so the browser has
+    // time to start the download.
     const downloadFile = (content, filename, mimeType) => {
-      const blob = new Blob([content], { type: mimeType });
+      const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -526,31 +912,6 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
-
-    // Small styled keyboard key used in the tips modal.
-    const Kbd = ({ children }) => (
-      <kbd className="inline-flex items-center px-1.5 py-0.5 bg-zinc-800 text-zinc-300 rounded font-mono text-[11px] border border-zinc-700 align-baseline">{children}</kbd>
-    );
-
-    // A titled group of tips rendered as a table. Each row is a pair:
-    // [cue/shortcut, description].
-    function TipsSection({ title, rows }) {
-      return (
-        <section>
-          <h3 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2.5">{title}</h3>
-          <table className="w-full border-collapse">
-            <tbody className="divide-y divide-zinc-800/70">
-              {rows.map((row, i) => (
-                <tr key={i}>
-                  <td className="py-2.5 pr-5 align-top w-[180px] text-zinc-200 font-medium whitespace-nowrap">{row[0]}</td>
-                  <td className="py-2.5 align-top text-zinc-400 text-[13px] leading-relaxed">{row[1]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      );
-    }
 
     function EmptyDropAndLink({ onUploadClick, onPaste, linkUrl, setLinkUrl, onAddLink }) {
       return (
@@ -716,10 +1077,30 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const [highlightedSuggestion, setHighlightedSuggestion] = useState(-1);
       const [showAnnotateTip, setShowAnnotateTip] = useState(false);
       const [showPreviewTip, setShowPreviewTip] = useState(false);
-      const [showTipsModal, setShowTipsModal] = useState(false);
       const [linkDropHover, setLinkDropHover] = useState(false);
       const [editingNameId, setEditingNameId] = useState(null);
       const [editingNameValue, setEditingNameValue] = useState('');
+      const [editingTitleId, setEditingTitleId] = useState(null);
+      const [editingTitleValue, setEditingTitleValue] = useState('');
+      const [authorName, setAuthorNameState] = useState(() => {
+        try { return localStorage.getItem(AUTHOR_KEY) || ''; } catch { return ''; }
+      });
+      // Persists every change to localStorage. Cheap to do synchronously
+      // on each keystroke since the value is small.
+      const setAuthorName = (name) => {
+        setAuthorNameState(name);
+        try { localStorage.setItem(AUTHOR_KEY, name); } catch {}
+      };
+      const [theme, setThemeState] = useState(() => {
+        try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; } catch { return 'dark'; }
+      });
+      const setTheme = (next) => {
+        setThemeState(next);
+        try { localStorage.setItem(THEME_KEY, next); } catch {}
+      };
+      const [authorNudgeDismissed, setAuthorNudgeDismissed] = useState(false);
+      const [nameNudgeDraft, setNameNudgeDraft] = useState('');
+      const [tipIndex, setTipIndex] = useState(0);
 
       // First-run coach-marks. Both only fire when the session began with no
       // feedbacks (a true fresh load). Refs gate re-firing within the session.
@@ -788,6 +1169,21 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         return () => document.removeEventListener('mousedown', h);
       }, [showLinkInput]);
 
+      // Apply the theme attribute to <html> so every element (including the
+      // root container itself, which can't be matched by a descendant selector
+      // on itself) is in scope of the [data-theme="light"] override rules.
+      useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+      }, [theme]);
+
+      // Rotate the sidebar tip every 4s. Only runs when there's at least one
+      // feedback — the tip block isn't rendered otherwise.
+      useEffect(() => {
+        if (feedbacks.length === 0) return;
+        const id = setInterval(() => setTipIndex(i => i + 1), 4000);
+        return () => clearInterval(id);
+      }, [feedbacks.length]);
+
       // Reset all transient annotation state when switching media so a pending or
       // in-progress edit from one item doesn't leak into another.
       useEffect(() => {
@@ -826,13 +1222,12 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       useEffect(() => {
         const onKey = (e) => {
           if (e.key !== 'Escape') return;
-          if (showTipsModal) { setShowTipsModal(false); return; }
           if (showPreview) { setShowPreview(false); return; }
           if (showMenu) { setShowMenu(false); return; }
         };
         document.addEventListener('keydown', onKey);
         return () => document.removeEventListener('keydown', onKey);
-      }, [showTipsModal, showPreview, showMenu]);
+      }, [showPreview, showMenu]);
 
       // Focus the title input when a new feedback is created.
       useEffect(() => {
@@ -995,11 +1390,32 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         setEditingNameValue('');
       };
 
+      // Inline rename for a feedback's title from the sidebar list.
+      // Empty values are allowed — the row falls back to "Untitled" italic placeholder.
+      const startTitleEdit = (fid, currentTitle) => {
+        setEditingTitleId(fid);
+        setEditingTitleValue(currentTitle || '');
+      };
+      const commitTitleEdit = () => {
+        if (!editingTitleId) return;
+        updateFeedback(editingTitleId, { title: editingTitleValue });
+        setEditingTitleId(null);
+        setEditingTitleValue('');
+      };
+      const cancelTitleEdit = () => {
+        setEditingTitleId(null);
+        setEditingTitleValue('');
+      };
+
       const handleImageClick = (e) => {
         if (!annotationMode || activeMedia?.type !== 'image') return;
         const r = imageRef.current.getBoundingClientRect();
         setCurrentAnnotation({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100, type: 'image' });
         setAnnotationNote('');
+        // Starting a new annotation cancels any in-progress edit so the panel
+        // doesn't end up with two open compose surfaces at once.
+        setEditingAnnotationId(null);
+        setEditingNote('');
         setShowAnnotations(true);
       };
 
@@ -1076,12 +1492,26 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         };
       }, []);
 
-      const exportHTML = () => { try { downloadFile(generateExportHTML(feedbacks), `feedback-report-${todayStr()}.html`, 'text/html;charset=utf-8'); } catch (err) { setStorageStatus({ type: 'error', message: 'Export failed: ' + err.message }); } };
+      const exportHTML = () => { try { downloadFile(generateExportHTML(feedbacks, authorName), `feedback-report-${todayStr()}${authorSuffix(authorName)}.html`, 'text/html;charset=utf-8'); } catch (err) { setStorageStatus({ type: 'error', message: 'Export failed: ' + err.message }); } };
+      const exportCSV = () => { try { downloadFile(generateExportCSV(feedbacks, authorName), `feedback-report-${todayStr()}${authorSuffix(authorName)}.csv`, 'text/csv;charset=utf-8'); } catch (err) { setStorageStatus({ type: 'error', message: 'Export failed: ' + err.message }); } };
+      // XLSX export is async — the ExcelJS lib lazy-loads from CDN on first
+      // click and the image-embedding pass measures each unique screenshot.
+      const exportXLSX = async () => {
+        try {
+          setStorageStatus({ type: 'info', message: 'Preparing XLSX…' });
+          await loadExcelJS();
+          const blob = await generateXLSXBlob(feedbacks, authorName);
+          downloadFile(blob, `feedback-report-${todayStr()}${authorSuffix(authorName)}.xlsx`);
+          setStorageStatus({ type: 'success', message: 'XLSX downloaded' });
+        } catch (err) {
+          setStorageStatus({ type: 'error', message: 'XLSX export failed: ' + err.message });
+        }
+      };
 
       const exportSession = () => {
         try {
           const json = JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), feedbacks }, null, 2);
-          downloadFile(json, `feedback-session-${todayStr()}.json`, 'application/json');
+          downloadFile(json, `feedback-session-${todayStr()}${authorSuffix(authorName)}.json`, 'application/json');
           setShowMenu(false);
         } catch (err) { setStorageStatus({ type: 'error', message: 'Session export failed: ' + err.message }); }
       };
@@ -1137,8 +1567,8 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       // Only regenerate the report HTML when feedbacks change AND the preview is open.
       // This avoids re-stringifying every image data URL on unrelated re-renders.
       const previewHtml = useMemo(
-        () => showPreview ? generateExportHTML(feedbacks) : '',
-        [showPreview, feedbacks]
+        () => showPreview ? generateExportHTML(feedbacks, authorName) : '',
+        [showPreview, feedbacks, authorName]
       );
 
       const handleZonePaste = async (e) => {
@@ -1191,41 +1621,35 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setShowPreview(false)} className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-sm font-medium flex items-center gap-1.5 transition"><X size={14} />Close</button>
+                  <button onClick={exportCSV} aria-label="Open in Google Sheets, Excel, etc." className="group relative px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-sm font-medium flex items-center gap-1.5 transition">
+                    <Download size={14} />Export CSV
+                    <Tooltip>Open in Google Sheets, Excel, etc.</Tooltip>
+                  </button>
+                  <button onClick={exportXLSX} aria-label="Spreadsheet with embedded images" className="group relative px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-sm font-medium flex items-center gap-1.5 transition">
+                    <Download size={14} />Export XLSX
+                    <Tooltip>Spreadsheet with embedded images</Tooltip>
+                  </button>
                   <button onClick={exportHTML} className="px-4 py-2 bg-zinc-100 hover:bg-white text-zinc-900 rounded text-sm font-semibold flex items-center gap-1.5 transition shadow-lg"><Download size={14} />Export HTML</button>
                 </div>
               </div>
+              {!authorName.trim() && !authorNudgeDismissed && (
+                <div className="bg-[#2563eb] px-5 py-2.5 flex items-center gap-3 flex-shrink-0">
+                  <span className="text-sm text-white font-medium">Add your name to attribute this report:</span>
+                  <input
+                    type="text"
+                    placeholder="Your name"
+                    autoFocus
+                    value={nameNudgeDraft}
+                    onChange={(e) => { let v = e.target.value; if (v.length > 0) v = v.charAt(0).toUpperCase() + v.slice(1); setNameNudgeDraft(v); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && nameNudgeDraft.trim()) setAuthorName(nameNudgeDraft.trim()); }}
+                    onBlur={() => { if (nameNudgeDraft.trim()) setAuthorName(nameNudgeDraft.trim()); }}
+                    className="flex-1 max-w-xs text-sm bg-white/15 text-white border border-white/25 rounded px-2.5 py-1 outline-none focus:bg-white/20 focus:border-white/60 focus:ring-2 focus:ring-white/30 placeholder:text-white/60 transition"
+                  />
+                  <span className="text-xs text-white/75">Press Enter to save</span>
+                  <button onClick={() => setAuthorNudgeDismissed(true)} className="text-xs text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/15 transition">Skip</button>
+                </div>
+              )}
               <iframe title="Report Preview" srcDoc={previewHtml} className="flex-1 w-full bg-zinc-950 border-0" />
-            </div>
-          )}
-
-          {showTipsModal && (
-            <div className="absolute inset-0 z-[55] bg-black/60 backdrop-blur-sm flex items-center justify-center p-6" onClick={() => setShowTipsModal(false)}>
-              <div className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-                <div className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between flex-shrink-0">
-                  <h2 className="text-base font-semibold text-zinc-100 flex items-center gap-2"><HelpCircle size={16} className="text-zinc-400" />Tips &amp; shortcuts</h2>
-                  <button onClick={() => setShowTipsModal(false)} className="text-zinc-500 hover:text-zinc-200 p-1 rounded hover:bg-zinc-800 transition" title="Close"><X size={14} /></button>
-                </div>
-                <div className="overflow-y-auto px-6 py-5 space-y-6 text-sm">
-                  <TipsSection title="Text replacements" rows={[
-                    [<><Kbd>-&gt;</Kbd></>, <>becomes <span className="text-zinc-200 font-medium">→</span></>],
-                    [<><Kbd>--</Kbd></>, <>becomes <span className="text-zinc-200 font-medium">—</span></>],
-                  ]} />
-                  <TipsSection title="Keyboard" rows={[
-                    [<><Kbd>⌘V</Kbd> / <Kbd>Ctrl+V</Kbd></>, 'Paste a screenshot from clipboard'],
-                    [<><Kbd>Enter</Kbd></>, <>Save annotation note (<Kbd>Shift+Enter</Kbd> for newline)</>],
-                    [<><Kbd>Enter</Kbd></>, 'In the title input — jump to Overall feedback'],
-                    [<><Kbd>↑</Kbd> / <Kbd>↓</Kbd></>, 'Cycle through past title suggestions'],
-                    [<><Kbd>Enter</Kbd></>, 'On a highlighted suggestion — accept it'],
-                    [<><Kbd>Esc</Kbd></>, 'Dismiss suggestions, cancel an edit, close Preview or menus'],
-                    [<><Kbd>Enter</Kbd></>, 'In a URL input — submit the link'],
-                  ]} />
-                  <TipsSection title="Automatic" rows={[
-                    ['Auto-save', 'Every change is saved to this browser'],
-                    ['Title capitalization', 'First character is auto-capitalized'],
-                    ['Title suggestions', 'Pulls from your past feedback titles (newest first)'],
-                  ]} />
-                </div>
-              </div>
             </div>
           )}
 
@@ -1233,14 +1657,34 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
           <div className="w-64 bg-zinc-950 border-r border-zinc-900 flex flex-col">
             <div className="px-4 py-3 border-b border-zinc-900 flex items-center justify-between">
               <h1 className="text-base font-bold text-zinc-100">Feedback Compiler</h1>
-              <div className="flex items-center gap-1">
-                <button onClick={() => setShowTipsModal(true)} className="p-1 rounded text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900 transition" title="Tips & shortcuts"><HelpCircle size={16} /></button>
-                <div className="relative" ref={menuRef}>
-                  <button onClick={() => setShowMenu(!showMenu)} className="p-1 rounded text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900 transition" title="More options"><MoreHorizontal size={16} /></button>
+              <div className="relative" ref={menuRef}>
+                  <button onClick={() => setShowMenu(!showMenu)} aria-label="More options" className="group relative p-1 rounded text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900 transition">
+                    <MoreHorizontal size={16} />
+                    {!showMenu && (
+                      <Tooltip anchor="right">More options</Tooltip>
+                    )}
+                  </button>
                   {showMenu && (
-                    <div className="absolute right-0 top-full mt-1 w-52 bg-zinc-900 border border-zinc-800 rounded shadow-2xl z-30 py-1">
+                    <div className="absolute right-0 top-full mt-1 w-60 bg-zinc-900 border border-zinc-800 rounded shadow-2xl z-30 py-1">
+                      <div className="px-3 py-2">
+                        <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Your name</div>
+                        <input
+                          type="text"
+                          value={authorName}
+                          onChange={(e) => { let v = e.target.value; if (v.length > 0) v = v.charAt(0).toUpperCase() + v.slice(1); setAuthorName(v); }}
+                          placeholder="e.g. Alex"
+                          className="w-full text-sm bg-zinc-950 text-zinc-100 border border-zinc-800 rounded px-2 py-1.5 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500/30 placeholder:text-zinc-600 transition"
+                        />
+                        <div className="text-[10px] text-zinc-600 mt-1.5 leading-snug">Shown on exported reports.</div>
+                      </div>
+                      <div className="my-1 border-t border-zinc-800" />
                       <button onClick={exportSession} disabled={feedbacks.length === 0} className="w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 transition"><FolderDown size={14} className="text-zinc-400" />Export session (.json)</button>
                       <button onClick={() => importFileRef.current?.click()} className="w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-800 flex items-center gap-2 transition"><FolderUp size={14} className="text-zinc-400" />Import session (.json)</button>
+                      <div className="my-1 border-t border-zinc-800" />
+                      <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-800 flex items-center gap-2 transition">
+                        {theme === 'dark' ? <Sun size={14} className="text-zinc-400" /> : <Moon size={14} className="text-zinc-400" />}
+                        {theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                      </button>
                       <div className="my-1 border-t border-zinc-800" />
                       <button onClick={clearAllData} disabled={feedbacks.length === 0} className="w-full px-3 py-2 text-left text-sm text-red-400 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 transition"><Trash size={14} />Clear all data</button>
                       <div className="px-3 pt-2 pb-1 text-[10px] text-zinc-600 border-t border-zinc-800 mt-1">Auto-saved in this browser</div>
@@ -1248,7 +1692,6 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                   )}
                   <input ref={importFileRef} type="file" accept="application/json" onChange={handleImportSession} className="hidden" />
                 </div>
-              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-3">
@@ -1256,24 +1699,71 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
               {feedbacks.length === 0 ? (
                 <div className="text-center py-8 text-zinc-600 text-sm"><MessageSquare size={32} className="mx-auto mb-2 opacity-40" />No feedback yet</div>
               ) : (
-                <div className="space-y-0.5">
-                  {feedbacks.map((fb, idx) => {
-                    const isActive = activeFeedbackId === fb.id;
-                    return (
-                      <div key={fb.id} onClick={() => { setActiveFeedbackId(fb.id); setActiveMediaId(fb.media[0]?.id || null); }} className={`group relative pl-3 pr-2 py-2.5 rounded cursor-pointer transition ${isActive ? 'bg-[#3f8efc]/10 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/40'}`}>
-                        {isActive && <div className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#3f8efc] rounded-r shadow-[0_0_8px_rgba(63,142,252,0.6)]" />}
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0 flex-1">
-                            <span className={`text-[11px] font-mono flex-shrink-0 ${isActive ? 'text-[#3f8efc]' : 'text-[#3f8efc]/60'}`}>{String(idx + 1).padStart(2, '0')}</span>
-                            <div className={`text-sm truncate flex-1 ${isActive ? 'font-semibold' : 'font-medium'} ${!fb.title?.trim() ? 'italic text-zinc-600' : ''}`}>{displayTitle(fb)}</div>
+                <>
+                  <div className="space-y-0.5">
+                    {feedbacks.map((fb, idx) => {
+                      const isActive = activeFeedbackId === fb.id;
+                      const isEditingTitle = editingTitleId === fb.id;
+                      return (
+                        <div key={fb.id} onClick={() => { if (isEditingTitle) return; setActiveFeedbackId(fb.id); setActiveMediaId(fb.media[0]?.id || null); }} className={`group relative pl-3 pr-2 py-2.5 rounded ${isEditingTitle ? '' : 'cursor-pointer'} transition ${isActive ? 'bg-[#3f8efc]/10 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/40'}`}>
+                          {isActive && <div className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#3f8efc] rounded-r shadow-[0_0_8px_rgba(63,142,252,0.6)]" />}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <span className={`text-[11px] font-mono flex-shrink-0 ${isActive ? 'text-[#3f8efc]' : 'text-[#3f8efc]/60'}`}>{String(idx + 1).padStart(2, '0')}</span>
+                              {isEditingTitle ? (
+                                <input
+                                  autoFocus
+                                  value={editingTitleValue}
+                                  onChange={(e) => { let v = applySmartReplace(e); if (v.length > 0) v = v.charAt(0).toUpperCase() + v.slice(1); setEditingTitleValue(v); }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') { e.preventDefault(); commitTitleEdit(); }
+                                    else if (e.key === 'Escape') { e.preventDefault(); cancelTitleEdit(); }
+                                  }}
+                                  onBlur={commitTitleEdit}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onFocus={(e) => e.target.select()}
+                                  className="flex-1 min-w-0 text-sm bg-zinc-950 border border-zinc-700 text-zinc-100 rounded px-1.5 py-0.5 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400/30"
+                                />
+                              ) : (
+                                <div
+                                  onDoubleClick={(e) => { e.stopPropagation(); startTitleEdit(fb.id, fb.title); }}
+                                  title="Double-click to rename"
+                                  className={`text-sm truncate flex-1 select-none ${isActive ? 'font-semibold' : 'font-medium'} ${!fb.title?.trim() ? 'italic text-zinc-600' : ''}`}
+                                >
+                                  {displayTitle(fb)}
+                                </div>
+                              )}
+                            </div>
+                            {!isEditingTitle && (
+                              <button onClick={(e) => { e.stopPropagation(); deleteFeedback(fb.id); }} className="opacity-0 group-hover:opacity-100 transition text-zinc-600 hover:text-red-400 flex-shrink-0"><Trash2 size={14} /></button>
+                            )}
                           </div>
-                          <button onClick={(e) => { e.stopPropagation(); deleteFeedback(fb.id); }} className="opacity-0 group-hover:opacity-100 transition text-zinc-600 hover:text-red-400 flex-shrink-0"><Trash2 size={14} /></button>
+                          <div className={`text-xs mt-0.5 ml-7 ${isActive ? 'text-zinc-500' : 'text-zinc-600'}`}>{fb.media.length} item{fb.media.length !== 1 ? 's' : ''}</div>
                         </div>
-                        <div className={`text-xs mt-0.5 ml-7 ${isActive ? 'text-zinc-500' : 'text-zinc-600'}`}>{fb.media.length} item{fb.media.length !== 1 ? 's' : ''}</div>
+                      );
+                    })}
+                  </div>
+                  {(() => {
+                    // Inline kbd-style chip for the rotating tips below — kept local
+                    // so it's right next to the data that uses it.
+                    const K = ({ children }) => (
+                      <span className="font-mono px-1.5 py-0.5 bg-zinc-800 text-zinc-300 rounded text-[11px] border border-zinc-700/60">{children}</span>
+                    );
+                    const tips = [
+                      <>Type <K>-</K> and <K>&gt;</K> for <span className="text-zinc-300">→</span></>,
+                      <>On Mac, <span className="whitespace-nowrap"><K>⌘</K>+<K>Ctrl</K>+<K>Shift</K>+<K>4</K></span> — drag a selection, copied to clipboard</>,
+                      <>On PC, <span className="whitespace-nowrap"><K>Windows</K>+<K>Shift</K>+<K>S</K></span> — drag a selection, copied to clipboard</>,
+                      <><span className="whitespace-nowrap"><K>⌘</K>+<K>V</K></span> (Mac) or <span className="whitespace-nowrap"><K>Ctrl</K>+<K>V</K></span> (PC) to paste anywhere here</>,
+                      <>Entries are auto-saved on your browser</>,
+                    ];
+                    const i = tipIndex % tips.length;
+                    return (
+                      <div className="mt-4 pt-3 border-t border-zinc-900 px-1">
+                        <div key={i} className="text-[11px] text-zinc-500 leading-relaxed animate-tip-fade">{tips[i]}</div>
                       </div>
                     );
-                  })}
-                </div>
+                  })()}
+                </>
               )}
             </div>
 
@@ -1322,12 +1812,12 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                       <div className="flex gap-1.5">
                         <button onClick={() => fileInputRef.current.click()} aria-label="Upload image" className="group relative flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded flex items-center justify-center transition">
                           <Upload size={14} />
-                          <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-1 bg-zinc-950 text-zinc-100 text-[11px] font-medium rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 border border-zinc-700 shadow-lg">Upload image</span>
+                          <Tooltip>Upload image</Tooltip>
                         </button>
                         {!showLinkInput && (
                           <button onClick={() => setShowLinkInput(true)} aria-label="Add link" className="group relative flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded flex items-center justify-center transition">
                             <Link2 size={14} />
-                            <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-1 bg-zinc-950 text-zinc-100 text-[11px] font-medium rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 border border-zinc-700 shadow-lg">Add link</span>
+                            <Tooltip>Add link</Tooltip>
                           </button>
                         )}
                       </div>
@@ -1396,7 +1886,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                         <div className="bg-zinc-900 border-b border-zinc-800 px-4 py-2.5 flex items-center justify-between gap-2 flex-shrink-0">
                           <div className="text-sm text-zinc-400 flex items-center gap-2 min-w-0">
                             {activeMedia.type === 'image' && annotationMode && (
-                              <span className="flex items-center gap-2 flex-shrink-0"><span className="inline-block w-1.5 h-1.5 rounded-full bg-zinc-300 animate-pulse" />Click any part of image to add</span>
+                              <span className="flex items-center gap-2 flex-shrink-0"><span className="inline-block w-1.5 h-1.5 rounded-full bg-[#3f8efc] shadow-[0_0_8px_rgba(63,142,252,0.9)] animate-pulse" />Click any part of image to add</span>
                             )}
                             {activeMedia.type === 'image' && !annotationMode && (
                               editingNameId === activeMedia.id ? (
@@ -1512,9 +2002,9 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                             <div className={`text-[10px] font-mono ${annotationNote.length > ANNOTATION_MAX_LENGTH - 20 ? 'text-yellow-400' : 'text-zinc-500'}`}>{annotationNote.length}/{ANNOTATION_MAX_LENGTH}</div>
                           </div>
                           <textarea value={annotationNote} onChange={(e) => { const v = applySmartReplace(e); if (v.length <= ANNOTATION_MAX_LENGTH) setAnnotationNote(v); }} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (annotationNote.trim()) saveAnnotation(); } }} maxLength={ANNOTATION_MAX_LENGTH} placeholder="Describe the issue or feedback..." autoFocus className="w-full text-sm bg-zinc-950 text-zinc-100 border border-zinc-700 rounded px-3 py-2 outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/20 transition resize-none placeholder:text-zinc-600" rows={3} />
-                          <div className="flex items-center justify-end gap-2 mt-2">
-                            <button onClick={() => { setCurrentAnnotation(null); setAnnotationNote(''); }} className="px-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-1.5 rounded text-sm transition"><X size={14} /></button>
-                            <button onClick={saveAnnotation} disabled={!annotationNote.trim()} className="bg-zinc-100 text-zinc-900 py-1.5 px-4 rounded text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white transition flex items-center justify-center gap-1"><Save size={12} />Save</button>
+                          <div className="flex items-center justify-end gap-1.5 mt-2">
+                            <button onClick={() => { setCurrentAnnotation(null); setAnnotationNote(''); }} className="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition">Cancel</button>
+                            <button onClick={saveAnnotation} disabled={!annotationNote.trim()} className="px-3 py-1 bg-zinc-100 hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed text-zinc-900 rounded text-xs font-semibold transition flex items-center gap-1"><Save size={10} />Save</button>
                           </div>
                         </div>
                       )}
@@ -1525,8 +2015,12 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                         ) : (
                           activeMedia.annotations.map(a => {
                             const isEditing = editingAnnotationId === a.id;
+                            // While a new annotation is being drafted, existing ones go
+                            // read-only — no edit-on-click, no edit/delete buttons,
+                            // dimmed appearance — so the compose surface is unambiguous.
+                            const disabled = !!currentAnnotation;
                             return (
-                              <div key={a.id} className="group p-3 mb-2 bg-zinc-800/50 rounded border border-zinc-800">
+                              <div key={a.id} className={`group p-3 mb-2 bg-zinc-800/50 rounded border border-zinc-800 transition ${disabled ? 'opacity-50' : ''}`}>
                                 <div className="flex items-start gap-2">
                                   <div className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">{a.number}</div>
                                   <div className="flex-1 min-w-0">
@@ -1542,11 +2036,13 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                                           <button onClick={saveEditAnnotation} disabled={!editingNote.trim()} className="px-3 py-1 bg-zinc-100 hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed text-zinc-900 rounded text-xs font-semibold transition flex items-center gap-1"><Save size={10} />Save</button>
                                         </div>
                                       </>
+                                    ) : disabled ? (
+                                      <div className="text-sm text-zinc-200 whitespace-pre-wrap break-words -mx-1 px-1 py-0.5">{a.note}</div>
                                     ) : (
                                       <div onClick={() => startEditAnnotation(a)} className="text-sm text-zinc-200 whitespace-pre-wrap break-words cursor-text hover:bg-zinc-800/50 -mx-1 px-1 py-0.5 rounded transition" title="Click to edit">{a.note}</div>
                                     )}
                                   </div>
-                                  {!isEditing && (
+                                  {!isEditing && !disabled && (
                                     <div className="flex items-center gap-1 flex-shrink-0">
                                       <button onClick={() => startEditAnnotation(a)} className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-zinc-200 transition" title="Edit"><Edit3 size={12} /></button>
                                       <button onClick={() => deleteAnnotation(a.id)} className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 transition" title="Delete"><Trash2 size={12} /></button>
