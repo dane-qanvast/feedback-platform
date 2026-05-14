@@ -57,6 +57,7 @@
     const Link2 = (p) => <Icon {...p}><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></Icon>;
     const ExternalLink = (p) => <Icon {...p}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></Icon>;
     const HelpCircle = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></Icon>;
+    const Pencil = (p) => <Icon {...p}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></Icon>;
 
     const ANNOTATION_MAX_LENGTH = 200;
     const STORAGE_KEY = 'feedback-platform-data';
@@ -194,6 +195,12 @@
 
     const buildFeedbackPrompt = (fb) => {
       const lines = [];
+      // Context header so the AI/developer knows what they're looking at.
+      // The developer adds their own task after pasting (fix, ticket, summarize, etc).
+      lines.push('Feedback collected from a UI/UX feedback session. Numbered items under each screenshot are markers placed at specific positions on the image. Screenshot files are not attached — attach separately if visual context is needed.');
+      lines.push('');
+      lines.push('---');
+      lines.push('');
       lines.push(`## Feedback: ${displayTitle(fb)}`);
       if (fb.overallNote && fb.overallNote.trim()) {
         lines.push('');
@@ -205,9 +212,7 @@
           const annots = m.annotations || [];
           lines.push('');
           lines.push(`### Screenshot: ${m.name}`);
-          if (annots.length === 0) {
-            lines.push('_(no annotations)_');
-          } else {
+          if (annots.length > 0) {
             for (const a of annots) {
               const note = (a.note || '').replace(/\s+$/, '');
               const noteLines = note.split('\n');
@@ -238,7 +243,7 @@
           let mediaContent = '';
           let headerIcon = '📷';
           if (m.type === 'image') {
-            mediaContent = `<div class="media-wrapper"><img src="${m.dataUrl}" alt="${escapeHtml(m.name)}" />${m.annotations.map(a => `<a href="#ann-${scopeId}-${a.number}" class="marker" style="left: ${a.x}%; top: ${a.y}%;">${a.number}<span class="marker-tooltip">${escapeHtml(a.note)}</span></a>`).join('')}</div>`;
+            mediaContent = `<div class="media-wrapper"><img data-name="${escapeHtml(m.name)}" src="${m.dataUrl}" alt="${escapeHtml(m.name)}" />${m.annotations.map(a => `<a href="#ann-${scopeId}-${a.number}" class="marker" style="left: ${a.x}%; top: ${a.y}%;">${a.number}<span class="marker-tooltip">${escapeHtml(a.note)}</span></a>`).join('')}</div>`;
           } else if (m.type === 'link') {
             const info = providerInfo[m.provider];
             const embedUrl = getEmbedUrl(m.provider, m.url);
@@ -300,6 +305,17 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .copy-prompt-btn:hover { background: rgba(250, 250, 250, 0.06); color: #e4e4e7; border-color: #3f3f46; }
 .copy-prompt-btn.copied { color: #3f8efc; border-color: rgba(63, 142, 252, 0.5); background: rgba(63, 142, 252, 0.1); }
 .copy-prompt-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+.img-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 24px; }
+.img-modal-overlay.open { display: flex; }
+.img-modal-card { background: #18181b; border: 1px solid #27272a; border-radius: 8px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); max-width: 28rem; width: 100%; padding: 20px; }
+.img-modal-card h3 { font-size: 16px; font-weight: 600; color: #f4f4f5; margin: 0 0 6px 0; }
+.img-modal-card p { font-size: 13px; color: #a1a1aa; margin: 0 0 18px 0; line-height: 1.5; }
+.img-modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.img-modal-actions button { padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: inherit; transition: background 0.15s ease, color 0.15s ease; }
+.img-modal-cancel { background: #27272a; color: #e4e4e7; }
+.img-modal-cancel:hover { background: #3f3f46; }
+.img-modal-primary { background: #3f8efc; color: #fff; font-weight: 600; }
+.img-modal-primary:hover { background: #5b9efd; }
 .feedback-section.is-done > :not(.feedback-header) { display: none; }
 .feedback-section.is-done .feedback-header { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
 .feedback-section.is-done .done-toggle { color: #3f8efc; }
@@ -344,6 +360,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
 </div>
 <script type="application/json" data-prompts>${promptsJson}<\/script>
+<div class="img-modal-overlay" id="image-download-modal" role="dialog" aria-modal="true" aria-labelledby="img-modal-title">
+  <div class="img-modal-card">
+    <h3 id="img-modal-title">Download images to feed with AI prompt?</h3>
+    <p>Prompt copied to clipboard. Most AI tools work better when you also attach the screenshots alongside it.</p>
+    <div class="img-modal-actions">
+      <button type="button" class="img-modal-cancel">Not required</button>
+      <button type="button" class="img-modal-primary">Download</button>
+    </div>
+  </div>
+</div>
 <script>
 (function() {
   // State is keyed per feedback ID under a single shared key, so re-exports of
@@ -404,6 +430,51 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       return ok;
     } catch (e) { return false; }
   }
+  // Image-download modal — shown after a successful Copy prompt to ask the
+  // developer whether they also want the screenshots for visual context.
+  var imgModal = document.getElementById('image-download-modal');
+  var imgModalCancel = imgModal && imgModal.querySelector('.img-modal-cancel');
+  var imgModalPrimary = imgModal && imgModal.querySelector('.img-modal-primary');
+  var pendingFbId = null;
+  function openImgModal(fbId) {
+    if (!imgModal) return;
+    pendingFbId = fbId;
+    imgModal.classList.add('open');
+  }
+  function closeImgModal() {
+    pendingFbId = null;
+    if (imgModal) imgModal.classList.remove('open');
+  }
+  function downloadImagesFor(fbId) {
+    if (!fbId) return;
+    var safeId = (typeof CSS !== 'undefined' && CSS.escape) ? CSS.escape(fbId) : fbId.replace(/(["\\\\])/g, '\\\\$1');
+    var section = document.querySelector('.feedback-section[data-feedback-id="' + safeId + '"]');
+    if (!section) return;
+    var imgs = section.querySelectorAll('img[data-name]');
+    // Trigger all downloads synchronously so they all share the same user
+    // gesture context. Browsers block programmatic downloads that run after
+    // the gesture has lapsed (which is what setTimeout would cause).
+    imgs.forEach(function(img, i) {
+      var name = img.getAttribute('data-name') || ('image-' + (i + 1) + '.png');
+      var a = document.createElement('a');
+      a.href = img.src;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+  }
+  if (imgModalCancel) imgModalCancel.addEventListener('click', closeImgModal);
+  if (imgModalPrimary) imgModalPrimary.addEventListener('click', function() {
+    var id = pendingFbId;
+    closeImgModal();
+    downloadImagesFor(id);
+  });
+  if (imgModal) imgModal.addEventListener('click', function(e) { if (e.target === imgModal) closeImgModal(); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && imgModal && imgModal.classList.contains('open')) closeImgModal();
+  });
+
   document.querySelectorAll('.copy-prompt-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var id = btn.getAttribute('data-prompt-id');
@@ -418,6 +489,13 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
           btn.classList.remove('copied');
           if (label) label.textContent = originalLabel;
         }, 1500);
+        // Offer the screenshots — only if there are any to download.
+        // Delay so the button's "Copied!" feedback is visible before the
+        // modal overlay covers the page.
+        var section = btn.closest('.feedback-section');
+        if (section && section.querySelector('img[data-name]')) {
+          setTimeout(function() { openImgModal(id); }, 500);
+        }
       }
       function showFailed() {
         if (label) label.textContent = 'Copy failed';
@@ -640,6 +718,8 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const [showPreviewTip, setShowPreviewTip] = useState(false);
       const [showTipsModal, setShowTipsModal] = useState(false);
       const [linkDropHover, setLinkDropHover] = useState(false);
+      const [editingNameId, setEditingNameId] = useState(null);
+      const [editingNameValue, setEditingNameValue] = useState('');
 
       // First-run coach-marks. Both only fire when the session began with no
       // feedbacks (a true fresh load). Refs gate re-firing within the session.
@@ -653,6 +733,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const imageRef = useRef(null);
       const addFilesRef = useRef(null);
       const menuRef = useRef(null);
+      const linkInputRef = useRef(null);
       const overallNoteRef = useRef(null);
       const titleInputRef = useRef(null);
       const focusTitleOnNextRender = useRef(false);
@@ -699,6 +780,14 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         return () => document.removeEventListener('mousedown', h);
       }, [showMenu]);
 
+      // Click anywhere outside the Paste-URL field closes it (same as Cancel).
+      useEffect(() => {
+        if (!showLinkInput) return;
+        const h = (e) => { if (linkInputRef.current && !linkInputRef.current.contains(e.target)) setShowLinkInput(false); };
+        document.addEventListener('mousedown', h);
+        return () => document.removeEventListener('mousedown', h);
+      }, [showLinkInput]);
+
       // Reset all transient annotation state when switching media so a pending or
       // in-progress edit from one item doesn't leak into another.
       useEffect(() => {
@@ -707,6 +796,8 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         setAnnotationNote('');
         setEditingAnnotationId(null);
         setEditingNote('');
+        setEditingNameId(null);
+        setEditingNameValue('');
       }, [activeMediaId]);
       useEffect(() => { addFilesRef.current = addFiles; });
 
@@ -840,6 +931,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         const nm = await Promise.all(mfs.map(buildMediaItem));
         setFeedbacks(wf.map(f => f.id === tid ? { ...f, media: [...f.media, ...nm] } : f));
         if (nm.length > 0) setActiveMediaId(nm[0].id);
+        setShowLinkInput(false);
       };
 
       const handleFileUpload = async (e) => { const fs = Array.from(e.target.files); if (fs.length) await addFiles(fs); e.target.value = ''; };
@@ -870,6 +962,38 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         setActiveMediaId(survivors.length ? survivors[Math.min(idx, survivors.length - 1)].id : null);
       };
       const updateMediaNote = (mid, note) => updateActiveMedia(m => m.map(x => x.id === mid ? { ...x, note } : x));
+      const updateMediaName = (mid, name) => updateActiveMedia(m => m.map(x => x.id === mid ? { ...x, name } : x));
+
+      // Split a filename into [base, extension]. Leading-dot files (e.g. .gitignore)
+      // are treated as having no extension to avoid eating their whole name.
+      const splitExt = (name) => {
+        const idx = (name || '').lastIndexOf('.');
+        if (idx <= 0) return [name || '', ''];
+        return [name.slice(0, idx), name.slice(idx)];
+      };
+
+      const startNameEdit = (mid, currentName) => {
+        const [base] = splitExt(currentName);
+        setEditingNameId(mid);
+        setEditingNameValue(base);
+      };
+      const commitNameEdit = () => {
+        if (!editingNameId) return;
+        const target = activeFeedback?.media.find(m => m.id === editingNameId);
+        if (target) {
+          const [, ext] = splitExt(target.name || '');
+          const trimmed = editingNameValue.trim();
+          if (trimmed.length > 0) {
+            updateMediaName(editingNameId, trimmed + ext);
+          }
+        }
+        setEditingNameId(null);
+        setEditingNameValue('');
+      };
+      const cancelNameEdit = () => {
+        setEditingNameId(null);
+        setEditingNameValue('');
+      };
 
       const handleImageClick = (e) => {
         if (!annotationMode || activeMedia?.type !== 'image') return;
@@ -936,6 +1060,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
           e.stopPropagation();
           dragCounter.current = 0;
           setIsDragging(false);
+          setLinkDropHover(false);
           const files = Array.from(e.dataTransfer.files);
           if (files.length && addFilesRef.current) await addFilesRef.current(files);
         };
@@ -1136,7 +1261,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                     const isActive = activeFeedbackId === fb.id;
                     return (
                       <div key={fb.id} onClick={() => { setActiveFeedbackId(fb.id); setActiveMediaId(fb.media[0]?.id || null); }} className={`group relative pl-3 pr-2 py-2.5 rounded cursor-pointer transition ${isActive ? 'bg-[#3f8efc]/10 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/40'}`}>
-                        {isActive && <div className="absolute left-0 top-2 bottom-2 w-0.5 bg-[#3f8efc] rounded-r" />}
+                        {isActive && <div className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#3f8efc] rounded-r shadow-[0_0_8px_rgba(63,142,252,0.6)]" />}
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0 flex-1">
                             <span className={`text-[11px] font-mono flex-shrink-0 ${isActive ? 'text-[#3f8efc]' : 'text-[#3f8efc]/60'}`}>{String(idx + 1).padStart(2, '0')}</span>
@@ -1194,11 +1319,20 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                   {/* Media sub-panel */}
                   <div className="w-44 bg-zinc-900 border-r border-zinc-800 flex flex-col">
                     <div className="p-2.5 border-b border-zinc-800 space-y-1.5">
-                      <button onClick={() => fileInputRef.current.click()} className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-1.5 rounded text-xs font-medium flex items-center justify-center gap-1.5 transition"><Upload size={12} />Upload Image</button>
-                      {!showLinkInput ? (
-                        <button onClick={() => setShowLinkInput(true)} className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-1.5 rounded text-xs font-medium flex items-center justify-center gap-1.5 transition"><Link2 size={12} />Add link</button>
-                      ) : (
-                        <div className="space-y-1.5">
+                      <div className="flex gap-1.5">
+                        <button onClick={() => fileInputRef.current.click()} aria-label="Upload image" className="group relative flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded flex items-center justify-center transition">
+                          <Upload size={14} />
+                          <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-1 bg-zinc-950 text-zinc-100 text-[11px] font-medium rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 border border-zinc-700 shadow-lg">Upload image</span>
+                        </button>
+                        {!showLinkInput && (
+                          <button onClick={() => setShowLinkInput(true)} aria-label="Add link" className="group relative flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded flex items-center justify-center transition">
+                            <Link2 size={14} />
+                            <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-1 bg-zinc-950 text-zinc-100 text-[11px] font-medium rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 border border-zinc-700 shadow-lg">Add link</span>
+                          </button>
+                        )}
+                      </div>
+                      {showLinkInput && (
+                        <div ref={linkInputRef} className="space-y-1.5">
                           <input
                             autoFocus
                             type="text"
@@ -1217,18 +1351,31 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                           </div>
                         </div>
                       )}
-                      <p className="text-[10px] text-zinc-500 text-center leading-tight pt-0.5">or drag &amp; drop anywhere</p>
                     </div>
                     <div className="flex-1 overflow-y-auto p-2">
-                      {activeFeedback.media.length === 0 ? (
-                        <div className="text-center py-6 text-zinc-600 text-xs">No media added</div>
-                      ) : (
-                        <div className="space-y-2">
-                          {activeFeedback.media.map(m => (
-                            <MediaThumbnail key={m.id} media={m} isActive={activeMediaId === m.id} onClick={() => setActiveMediaId(m.id)} onDelete={() => deleteMedia(m.id)} />
-                          ))}
+                      <div className="space-y-2">
+                        {activeFeedback.media.map(m => (
+                          <MediaThumbnail key={m.id} media={m} isActive={activeMediaId === m.id} onClick={() => setActiveMediaId(m.id)} onDelete={() => deleteMedia(m.id)} />
+                        ))}
+                        {/* Always-available drop tile — last "media slot" in the list.
+                            Doubles as click-to-upload. Lives in our document so it
+                            works reliably even when a cross-origin iframe (Loom/YouTube)
+                            owns the main viewer area. The actual drop is handled by
+                            the window-level capture-phase listener; this tile only
+                            manages its own drag-over highlight. */}
+                        <div
+                          onClick={() => fileInputRef.current.click()}
+                          onDragEnter={(e) => { e.preventDefault(); setLinkDropHover(true); }}
+                          onDragOver={(e) => { e.preventDefault(); setLinkDropHover(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); setLinkDropHover(false); }}
+                          style={{ aspectRatio: '16 / 9' }}
+                          className={`rounded cursor-pointer transition border-2 border-dashed flex flex-col items-center justify-center gap-1 px-2 ${linkDropHover ? 'bg-[#3f8efc]/15 border-[#3f8efc] text-[#3f8efc]' : 'bg-zinc-900/30 border-zinc-700 text-zinc-500 hover:bg-zinc-900/60 hover:border-zinc-500 hover:text-zinc-300'}`}
+                          title="Click to choose a screenshot, or drag one here"
+                        >
+                          <Upload size={14} />
+                          <div className="text-[10px] font-medium text-center leading-tight">{linkDropHover ? 'Release to add' : 'Drop or click to add screenshot / image'}</div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
 
@@ -1252,7 +1399,35 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                               <span className="flex items-center gap-2 flex-shrink-0"><span className="inline-block w-1.5 h-1.5 rounded-full bg-zinc-300 animate-pulse" />Click any part of image to add</span>
                             )}
                             {activeMedia.type === 'image' && !annotationMode && (
-                              <span className="flex items-center gap-1.5 text-zinc-500 min-w-0"><span className="text-zinc-600 text-xs">📷</span><span className="truncate" title={activeMedia.name}>{activeMedia.name}</span></span>
+                              editingNameId === activeMedia.id ? (
+                                <span className="flex items-center gap-1.5 min-w-0">
+                                  <span className="text-zinc-600 text-xs flex-shrink-0">📷</span>
+                                  <input
+                                    autoFocus
+                                    value={editingNameValue}
+                                    onChange={(e) => setEditingNameValue(e.target.value)}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') { e.preventDefault(); commitNameEdit(); }
+                                      else if (e.key === 'Escape') { e.preventDefault(); cancelNameEdit(); }
+                                    }}
+                                    onBlur={commitNameEdit}
+                                    onFocus={(e) => e.target.select()}
+                                    className="bg-zinc-950 border border-zinc-700 text-zinc-200 text-sm rounded px-1.5 py-0.5 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400/30 min-w-0 max-w-[28rem]"
+                                    style={{ width: `${Math.max(editingNameValue.length, 8) + 2}ch` }}
+                                  />
+                                  <span className="text-zinc-500 select-none flex-shrink-0">{splitExt(activeMedia.name)[1]}</span>
+                                </span>
+                              ) : (
+                                <button
+                                  onClick={() => startNameEdit(activeMedia.id, activeMedia.name)}
+                                  className="group flex items-center gap-1.5 text-zinc-500 hover:text-zinc-200 min-w-0 px-1 -mx-1 py-0.5 rounded hover:bg-zinc-800/60 transition"
+                                  title="Click to rename"
+                                >
+                                  <span className="text-zinc-600 text-xs flex-shrink-0">📷</span>
+                                  <span className="truncate">{activeMedia.name}</span>
+                                  <Pencil size={11} className="opacity-0 group-hover:opacity-70 transition flex-shrink-0" />
+                                </button>
+                              )
                             )}
                             {activeMedia.type === 'link' && (
                               <span className="flex items-center gap-1.5 text-zinc-500 flex-shrink-0"><Link2 size={12} />{providerInfo[activeMedia.provider].label}</span>
@@ -1309,30 +1484,6 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                           ) : (
                             <div className="flex flex-col items-center w-full max-w-3xl">
                               <LinkViewer media={activeMedia} />
-                              {/* Explicit drop zone below the iframe. Some browsers fully scope drag
-                                  events to a cross-origin iframe's child document, so the global
-                                  drag handler can't see drops landing on top of Loom/YouTube/etc.
-                                  This zone always lives in our document and works reliably. */}
-                              <div
-                                onClick={() => fileInputRef.current.click()}
-                                onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setLinkDropHover(true); }}
-                                onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setLinkDropHover(true); }}
-                                onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setLinkDropHover(false); }}
-                                onDrop={async (e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setLinkDropHover(false);
-                                  setIsDragging(false);
-                                  dragCounter.current = 0;
-                                  const files = Array.from(e.dataTransfer.files);
-                                  if (files.length) await addFiles(files);
-                                }}
-                                className={`w-full mt-3 py-5 px-3 text-sm font-medium rounded border-2 border-dashed cursor-pointer flex items-center justify-center gap-2 transition ${linkDropHover ? 'bg-[#3f8efc]/15 border-[#3f8efc] text-[#3f8efc]' : 'bg-zinc-900/40 border-zinc-700 text-zinc-400 hover:bg-zinc-900/70 hover:border-zinc-500 hover:text-zinc-200'}`}
-                                title="Click to choose a screenshot, or drag one in"
-                              >
-                                <Upload size={14} />
-                                {linkDropHover ? 'Release to add' : 'Drop a screenshot here or click to upload'}
-                              </div>
                               <div className="w-full mt-4 bg-zinc-900 rounded border border-zinc-800 p-4">
                                 <textarea value={activeMedia.note || ''} onChange={(e) => updateMediaNote(activeMedia.id, applySmartReplace(e))} placeholder="Add a short note..." className="w-full text-sm text-zinc-100 bg-zinc-950 border border-zinc-800 rounded px-3 py-2 outline-none focus:border-zinc-500 focus:ring-2 focus:ring-zinc-500/20 transition resize-none placeholder:text-zinc-600" rows={3} />
                               </div>
