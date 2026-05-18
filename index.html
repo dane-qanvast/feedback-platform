@@ -2092,8 +2092,10 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             ) : (
               <>
                 <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
-                  {/* Media sub-panel */}
-                  <div className="w-full md:w-44 bg-zinc-900 border-t md:border-t-0 md:border-r border-zinc-800 flex flex-row md:flex-col order-2 md:order-1 flex-shrink-0">
+                  {/* Media sub-panel — sticky to the bottom of the scroll viewport
+                      on mobile so it stays visible above the Feedback Details
+                      panel regardless of viewer/image scroll position. */}
+                  <div className="w-full md:w-44 bg-zinc-900 border-t md:border-t-0 md:border-r border-zinc-800 flex flex-row md:flex-col order-2 md:order-1 flex-shrink-0 sticky bottom-0 z-10 md:static md:z-auto">
                     <div className="w-16 md:w-auto flex-shrink-0 p-2.5 border-r md:border-r-0 md:border-b border-zinc-800 space-y-1.5">
                       <div className="flex flex-col md:flex-row gap-1.5">
                         <button onClick={() => fileInputRef.current.click()} aria-label="Upload image" className="group relative flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded flex items-center justify-center transition">
