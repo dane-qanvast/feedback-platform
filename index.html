@@ -10,7 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    html, body { margin: 0; padding: 0; height: 100%; background: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    html, body { margin: 0; padding: 0; height: 100dvh; background: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     #root { height: 100%; }
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: #09090b; }
@@ -1762,7 +1762,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       };
 
       return (
-        <div className="flex flex-col md:flex-row h-screen bg-zinc-950 text-zinc-100 relative">
+        <div className="flex flex-col md:flex-row h-[100dvh] bg-zinc-950 text-zinc-100 relative">
           {/* Mobile top bar — stays at the top of the column layout so the menu
               button has its own row and never overlaps content beneath. Desktop
               shows the sidebar header instead. */}
@@ -2202,7 +2202,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                         <div className="flex-1 overflow-auto p-4 flex items-start justify-center">
                           {activeMedia.type === 'image' ? (
                             <div className="relative inline-block max-w-full">
-                              <img ref={imageRef} src={activeMedia.dataUrl} alt={activeMedia.name} onClick={handleImageClick} className={`max-w-full rounded shadow-2xl ${annotationMode ? 'cursor-crosshair' : ''}`} style={{ maxHeight: 'calc(100vh - 160px)' }} />
+                              <img ref={imageRef} src={activeMedia.dataUrl} alt={activeMedia.name} onClick={handleImageClick} className={`max-w-full rounded shadow-2xl ${annotationMode ? 'cursor-crosshair' : ''}`} style={{ maxHeight: 'calc(100dvh - 160px)' }} />
                               {activeMedia.annotations.map(a => (
                                 <div key={a.id} className="absolute w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-xs border-2 border-zinc-950 shadow-lg hover:scale-110 transition-transform cursor-pointer" style={{ left: `${a.x}%`, top: `${a.y}%`, transform: 'translate(-50%, -50%)' }} title={a.note} onClick={() => setShowAnnotations(true)}>{a.number}</div>
                               ))}
