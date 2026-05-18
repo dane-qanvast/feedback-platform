@@ -28,6 +28,32 @@
     .animate-coach-in-up { animation: coach-in-up 220ms cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom center; }
     @keyframes tip-fade { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
     .animate-tip-fade { animation: tip-fade 360ms ease-out; }
+    @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .animate-slide-up { animation: slide-up 240ms cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+    .animate-slide-down { animation: slide-down 240ms cubic-bezier(0.7, 0, 0.84, 0) forwards; }
+
+    /* ---------- Mobile-specific styles ----------
+       Below 768px the layout collapses into a single column with a slide-in
+       sidebar drawer. Input/textarea font size is forced to 16px because iOS
+       Safari auto-zooms when focusing a field smaller than that, which is
+       jarring on touch devices.
+    */
+    @media (max-width: 767px) {
+      input, textarea, select {
+        font-size: 16px !important;
+      }
+      /* Slightly tighter outer padding on the main content area at mobile. */
+      .mobile-content-pad {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+      }
+    }
+    /* Sidebar drawer transition (mobile only). Desktop uses md: utility classes
+       to override the transform and keep the sidebar always visible. */
+    .mobile-sidebar-transition {
+      transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
     /* ---------- Dark theme overrides ----------
        Activated by data-theme="dark" on the <html> element. Shifts the neutral
@@ -53,11 +79,9 @@
     [data-theme="dark"] .bg-zinc-900\/50 { background-color: rgba(19, 25, 42, 0.5) !important; }
     [data-theme="dark"] .hover\:bg-zinc-900\/40:hover { background-color: rgba(19, 25, 42, 0.55) !important; }
     [data-theme="dark"] .hover\:bg-zinc-900\/60:hover { background-color: rgba(19, 25, 42, 0.6) !important; }
-    [data-theme="dark"] .hover\:bg-zinc-900\/70:hover { background-color: rgba(19, 25, 42, 0.7) !important; }
     [data-theme="dark"] .bg-zinc-800\/50 { background-color: rgba(30, 38, 56, 0.5) !important; }
     [data-theme="dark"] .hover\:bg-zinc-800\/50:hover { background-color: rgba(30, 38, 56, 0.7) !important; }
     [data-theme="dark"] .bg-zinc-800\/60 { background-color: rgba(30, 38, 56, 0.6) !important; }
-    [data-theme="dark"] .hover\:bg-zinc-800\/30:hover { background-color: rgba(30, 38, 56, 0.3) !important; }
     [data-theme="dark"] .hover\:bg-zinc-800\/60:hover { background-color: rgba(30, 38, 56, 0.6) !important; }
     [data-theme="dark"] .bg-zinc-950\/50 { background-color: rgba(10, 15, 28, 0.5) !important; }
     [data-theme="dark"] .hover\:bg-zinc-950:hover { background-color: #0a0f1c !important; }
@@ -68,7 +92,6 @@
     [data-theme="dark"] .border-zinc-800 { border-color: #252d44 !important; }
     [data-theme="dark"] .border-zinc-700 { border-color: #374257 !important; }
     [data-theme="dark"] .border-zinc-700\/60 { border-color: rgba(55, 66, 87, 0.6) !important; }
-    [data-theme="dark"] .divide-zinc-800\/70 > * + * { border-color: rgba(37, 45, 68, 0.7) !important; }
 
     /* Text — slate equivalents (slightly cooler than zinc) */
     [data-theme="dark"] .text-zinc-300 { color: #cbd5e1 !important; }
@@ -113,9 +136,7 @@
     [data-theme="light"] .hover\:bg-zinc-900\/40:hover { background-color: rgba(228, 228, 231, 0.7) !important; }
     [data-theme="light"] .bg-zinc-900\/30 { background-color: rgba(244, 244, 245, 0.5) !important; }
     [data-theme="light"] .hover\:bg-zinc-900\/60:hover { background-color: rgba(228, 228, 231, 0.8) !important; }
-    [data-theme="light"] .hover\:bg-zinc-900\/70:hover { background-color: rgba(228, 228, 231, 0.85) !important; }
     [data-theme="light"] .bg-zinc-900\/50 { background-color: rgba(244, 244, 245, 0.6) !important; }
-    [data-theme="light"] .hover\:bg-zinc-800\/30:hover { background-color: rgba(228, 228, 231, 0.5) !important; }
     [data-theme="light"] .hover\:bg-zinc-800\/60:hover { background-color: rgba(228, 228, 231, 0.7) !important; }
     [data-theme="light"] .bg-zinc-800\/60 { background-color: rgba(228, 228, 231, 0.6) !important; }
 
@@ -130,7 +151,6 @@
     [data-theme="light"] .hover\:text-zinc-200:hover { color: #18181b !important; }
     [data-theme="light"] .hover\:text-zinc-300:hover { color: #27272a !important; }
     [data-theme="light"] .hover\:text-white:hover { color: #18181b !important; }
-    [data-theme="light"] .placeholder\:text-zinc-500::placeholder { color: #a1a1aa !important; }
     [data-theme="light"] .placeholder\:text-zinc-600::placeholder { color: #d4d4d8 !important; }
 
     /* Borders */
@@ -139,7 +159,6 @@
     [data-theme="light"] .border-zinc-700 { border-color: #d4d4d8 !important; }
     [data-theme="light"] .border-zinc-700\/60 { border-color: rgba(212, 212, 216, 0.6) !important; }
     [data-theme="light"] .border-zinc-300 { border-color: #d4d4d8 !important; }
-    [data-theme="light"] .divide-zinc-800\/70 > * + * { border-color: rgba(228, 228, 231, 0.7) !important; }
     [data-theme="light"] .focus\:border-zinc-400:focus { border-color: #71717a !important; }
     [data-theme="light"] .focus\:border-zinc-500:focus { border-color: #52525b !important; }
     [data-theme="light"] .hover\:border-zinc-500:hover { border-color: #71717a !important; }
@@ -186,7 +205,6 @@
     const Icon = ({ children, size = 16, className = '' }) => (
       <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
     );
-    const Upload = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></Icon>;
     const Trash2 = (p) => <Icon {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></Icon>;
     const Download = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
     const Plus = (p) => <Icon {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></Icon>;
@@ -209,6 +227,7 @@
     const Sun = (p) => <Icon {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></Icon>;
     const Moon = (p) => <Icon {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></Icon>;
     const ImageIcon = (p) => <Icon {...p}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></Icon>;
+    const Menu = (p) => <Icon {...p}><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></Icon>;
 
     // Floating-label tooltip used on icon-only and small-text buttons. Apply
     // `group relative` to the parent button and drop a <Tooltip> inside. Set
@@ -989,10 +1008,13 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             className="group cursor-pointer border-2 border-dashed border-zinc-800 hover:border-zinc-500 focus:border-zinc-400 focus:outline-none rounded-lg bg-zinc-900/30 hover:bg-zinc-900/50 transition p-10"
           >
             <div className="w-14 h-14 mx-auto mb-3 rounded-md bg-zinc-800 group-hover:bg-zinc-700 flex items-center justify-center transition">
-              <Download size={26} className="text-zinc-300" />
+              <Download size={26} className="text-zinc-300 hidden md:block" />
+              <Plus size={26} className="text-zinc-300 md:hidden" />
             </div>
-            <p className="font-semibold text-zinc-200 mb-1 text-base text-center">Drop screenshots here</p>
-            <p className="text-xs text-zinc-500 text-center">or click to browse · paste with <kbd className="px-1.5 py-0.5 bg-zinc-800 rounded text-zinc-400 font-mono text-[10px]">⌘V</kbd></p>
+            <p className="font-semibold text-zinc-200 mb-1 text-base text-center hidden md:block">Drop screenshots here</p>
+            <p className="font-semibold text-zinc-200 mb-1 text-base text-center md:hidden">Add photos / screenshots</p>
+            <p className="text-xs text-zinc-500 text-center hidden md:block">or click to browse · paste with <kbd className="px-1.5 py-0.5 bg-zinc-800 rounded text-zinc-400 font-mono text-[10px]">⌘V</kbd></p>
+            <p className="text-xs text-zinc-500 text-center md:hidden">Tap to browse</p>
           </div>
 
           <div className="my-4 flex items-center gap-3 text-[10px] uppercase tracking-wider text-zinc-600">
@@ -1170,10 +1192,14 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       const [editingNote, setEditingNote] = useState('');
       const [isDragging, setIsDragging] = useState(false);
       const [showAnnotations, setShowAnnotations] = useState(false);
+      const [annotationsClosing, setAnnotationsClosing] = useState(false);
       const [bottomCollapsed, setBottomCollapsed] = useState(false);
       const [showPreview, setShowPreview] = useState(false);
       const [showMenu, setShowMenu] = useState(false);
       const [showExportMenu, setShowExportMenu] = useState(false);
+      // Only meaningful at mobile widths; on desktop the sidebar is always
+      // visible via Tailwind's md: utilities regardless of this value.
+      const [sidebarOpen, setSidebarOpen] = useState(false);
       const [storageStatus, setStorageStatus] = useState(null);
       const [confirmDialog, setConfirmDialog] = useState(null);
       const [linkUrl, setLinkUrl] = useState('');
@@ -1547,6 +1573,23 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
         setEditingTitleValue('');
       };
 
+      // User-initiated close for the annotations panel. On mobile (where the
+      // panel is a bottom-sheet drawer), we play the slide-down animation
+      // before unmounting; on desktop the panel is part of the row flex flow
+      // so it just disappears. Guard against double-fire while animating.
+      const closeAnnotations = () => {
+        if (annotationsClosing) return;
+        if (typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches) {
+          setShowAnnotations(false);
+          return;
+        }
+        setAnnotationsClosing(true);
+        setTimeout(() => {
+          setShowAnnotations(false);
+          setAnnotationsClosing(false);
+        }, 240);
+      };
+
       const handleImageClick = (e) => {
         if (!annotationMode || activeMedia?.type !== 'image') return;
         const r = imageRef.current.getBoundingClientRect();
@@ -1719,7 +1762,27 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
       };
 
       return (
-        <div className="flex h-screen bg-zinc-950 text-zinc-100 relative">
+        <div className="flex flex-col md:flex-row h-screen bg-zinc-950 text-zinc-100 relative">
+          {/* Mobile top bar — stays at the top of the column layout so the menu
+              button has its own row and never overlaps content beneath. Desktop
+              shows the sidebar header instead. */}
+          <div className="md:hidden flex-shrink-0 h-12 bg-zinc-900 border-b border-zinc-800 px-3 flex items-center gap-2 relative z-20">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Open menu"
+              className="p-1.5 -ml-1 rounded text-zinc-300 hover:bg-zinc-800 transition"
+            >
+              <Menu size={18} />
+            </button>
+            <h1 className="text-sm font-bold text-zinc-100">Feedback Compiler</h1>
+          </div>
+          {/* Mobile backdrop — tap outside the drawer to close it. */}
+          {sidebarOpen && (
+            <div
+              className="md:hidden fixed inset-0 z-30 bg-black/50"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
           {isDragging && (
             <div className="absolute inset-0 z-50 bg-zinc-100/15 backdrop-blur-sm flex items-center justify-center">
               <div className="bg-zinc-900 rounded-lg shadow-2xl p-10 border-4 border-dashed border-zinc-300 pointer-events-none">
@@ -1766,7 +1829,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                       <Download size={14} />Export <ChevronDown size={14} className={`transition-transform ${showExportMenu ? 'rotate-180' : ''}`} />
                     </button>
                     {showExportMenu && (
-                      <div role="menu" className="absolute right-0 top-full mt-2 w-80 bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl z-30 py-1 overflow-hidden">
+                      <div role="menu" className="absolute right-0 top-full mt-2 w-[18rem] sm:w-80 max-w-[calc(100vw-1.5rem)] bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl z-30 py-1 overflow-hidden">
                         <button role="menuitem" onClick={() => { setShowExportMenu(false); exportHTML(); }} className="w-full px-3 py-3 text-left hover:bg-zinc-800 flex items-start gap-3 transition">
                           <Download size={16} className="text-[#3f8efc] mt-0.5 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
@@ -1820,7 +1883,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
           )}
 
           {/* Sidebar */}
-          <div className="w-64 bg-zinc-950 border-r border-zinc-900 flex flex-col">
+          <div className={`mobile-sidebar-transition fixed md:relative inset-y-0 left-0 z-40 w-64 bg-zinc-950 border-r border-zinc-900 flex flex-col flex-shrink-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
             <div className="px-4 py-3 border-b border-zinc-900 flex items-center justify-between">
               <h1 className="text-base font-bold text-zinc-100">Feedback Compiler</h1>
               <div className="relative" ref={menuRef}>
@@ -1861,7 +1924,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
             </div>
 
             <div className="flex-1 overflow-y-auto p-3">
-              <button onClick={createFeedback} className="w-full bg-zinc-100 hover:bg-white text-zinc-900 py-2.5 rounded font-semibold text-sm flex items-center justify-center gap-2 transition mb-3 shadow-lg"><Plus size={16} />New Feedback</button>
+              <button onClick={() => { createFeedback(); setSidebarOpen(false); }} className="w-full bg-zinc-100 hover:bg-white text-zinc-900 py-2.5 rounded font-semibold text-sm flex items-center justify-center gap-2 transition mb-3 shadow-lg"><Plus size={16} />New Feedback</button>
               {feedbacks.length === 0 ? (
                 <div className="text-center py-8 text-zinc-600 text-sm"><MessageSquare size={32} className="mx-auto mb-2 opacity-40" />No feedback yet</div>
               ) : (
@@ -1871,7 +1934,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                       const isActive = activeFeedbackId === fb.id;
                       const isEditingTitle = editingTitleId === fb.id;
                       return (
-                        <div key={fb.id} onClick={() => { if (isEditingTitle) return; setActiveFeedbackId(fb.id); setActiveMediaId(fb.media[0]?.id || null); }} className={`group relative pl-3 pr-2 py-2.5 rounded ${isEditingTitle ? '' : 'cursor-pointer'} transition ${isActive ? 'bg-[#3f8efc]/10 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/40'}`}>
+                        <div key={fb.id} onClick={() => { if (isEditingTitle) return; setActiveFeedbackId(fb.id); setActiveMediaId(fb.media[0]?.id || null); setSidebarOpen(false); }} className={`group relative pl-3 pr-2 py-2.5 rounded ${isEditingTitle ? '' : 'cursor-pointer'} transition ${isActive ? 'bg-[#3f8efc]/10 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/40'}`}>
                           {isActive && <div className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#3f8efc] rounded-r shadow-[0_0_8px_rgba(63,142,252,0.6)]" />}
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -1972,11 +2035,11 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
               </div>
             ) : (
               <>
-                <div className="flex-1 flex overflow-hidden">
+                <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
                   {/* Media sub-panel */}
-                  <div className="w-44 bg-zinc-900 border-r border-zinc-800 flex flex-col">
-                    <div className="p-2.5 border-b border-zinc-800 space-y-1.5">
-                      <div className="flex gap-1.5">
+                  <div className="w-full md:w-44 bg-zinc-900 border-t md:border-t-0 md:border-r border-zinc-800 flex flex-row md:flex-col order-2 md:order-1 flex-shrink-0">
+                    <div className="w-16 md:w-auto flex-shrink-0 p-2.5 border-r md:border-r-0 md:border-b border-zinc-800 space-y-1.5">
+                      <div className="flex flex-col md:flex-row gap-1.5">
                         <button onClick={() => fileInputRef.current.click()} aria-label="Upload image" className="group relative flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded flex items-center justify-center transition">
                           <ImageIcon size={14} />
                           <Tooltip>Upload image</Tooltip>
@@ -2009,10 +2072,12 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 overflow-y-auto p-2">
-                      <div className="space-y-2">
+                    <div className="flex-1 min-w-0 overflow-x-auto md:overflow-x-hidden md:overflow-y-auto p-2">
+                      <div className="flex md:block gap-2 md:gap-0 md:space-y-2">
                         {activeFeedback.media.map(m => (
-                          <MediaThumbnail key={m.id} media={m} isActive={activeMediaId === m.id} onClick={() => setActiveMediaId(m.id)} onDelete={() => deleteMedia(m.id)} />
+                          <div key={m.id} className="flex-shrink-0 w-32 md:w-full">
+                            <MediaThumbnail media={m} isActive={activeMediaId === m.id} onClick={() => setActiveMediaId(m.id)} onDelete={() => deleteMedia(m.id)} />
+                          </div>
                         ))}
                         {/* Always-available drop tile — last "media slot" in the list.
                             Doubles as click-to-upload. Lives in our document so it
@@ -2026,18 +2091,20 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                           onDragOver={(e) => { e.preventDefault(); setLinkDropHover(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setLinkDropHover(false); }}
                           style={{ aspectRatio: '16 / 9' }}
-                          className={`rounded cursor-pointer transition border-2 border-dashed flex flex-col items-center justify-center gap-1 px-2 ${linkDropHover ? 'bg-[#3f8efc]/15 border-[#3f8efc] text-[#3f8efc]' : 'bg-zinc-900/30 border-zinc-700 text-zinc-500 hover:bg-zinc-900/60 hover:border-zinc-500 hover:text-zinc-300'}`}
+                          className={`flex-shrink-0 w-32 md:w-full rounded cursor-pointer transition border-2 border-dashed flex flex-col items-center justify-center gap-1 px-2 ${linkDropHover ? 'bg-[#3f8efc]/15 border-[#3f8efc] text-[#3f8efc]' : 'bg-zinc-900/30 border-zinc-700 text-zinc-500 hover:bg-zinc-900/60 hover:border-zinc-500 hover:text-zinc-300'}`}
                           title="Click to choose a screenshot, or drag one here"
                         >
-                          <Download size={14} />
-                          <div className="text-[10px] font-medium text-center leading-tight">{linkDropHover ? 'Release to add' : 'Drop or click to add screenshot / image'}</div>
+                          <Download size={14} className="hidden md:block" />
+                          <Plus size={14} className="md:hidden" />
+                          <div className="text-[10px] font-medium text-center leading-tight hidden md:block">{linkDropHover ? 'Release to add' : 'Drop or click to add screenshot / image'}</div>
+                          <div className="text-[10px] font-medium text-center leading-tight md:hidden">Add photos / screenshots</div>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Media viewer */}
-                  <div className="flex-1 flex flex-col bg-zinc-950 overflow-hidden">
+                  <div className="md:flex-1 flex flex-col bg-zinc-950 md:overflow-hidden order-1 md:order-2">
                     {!activeMedia ? (
                       <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
                         <EmptyDropAndLink
@@ -2053,7 +2120,10 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                         <div className="bg-zinc-900 border-b border-zinc-800 px-4 py-2.5 flex items-center justify-between gap-2 flex-shrink-0">
                           <div className="text-sm text-zinc-400 flex items-center gap-2 min-w-0">
                             {activeMedia.type === 'image' && annotationMode && (
-                              <span className="flex items-center gap-2 flex-shrink-0"><span className="inline-block w-1.5 h-1.5 rounded-full bg-[#3f8efc] shadow-[0_0_8px_rgba(63,142,252,0.9)] animate-pulse" />Click any part of image to add</span>
+                              <span className="flex items-start gap-2 min-w-0">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#3f8efc] shadow-[0_0_8px_rgba(63,142,252,0.9)] animate-pulse flex-shrink-0 mt-1.5" />
+                                <span>Click any part of image to add</span>
+                              </span>
                             )}
                             {activeMedia.type === 'image' && !annotationMode && (
                               editingNameId === activeMedia.id ? (
@@ -2094,15 +2164,17 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                             {activeMedia.type === 'image' && (
                               <>
                                 {annotationCount > 0 && (
-                                  <button onClick={() => setShowAnnotations(!showAnnotations)} className={`px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition ${showAnnotations ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' : 'bg-transparent text-zinc-300 hover:bg-zinc-800 border border-zinc-800'}`}>
+                                  <button onClick={() => showAnnotations ? closeAnnotations() : setShowAnnotations(true)} className={`px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition whitespace-nowrap flex-shrink-0 ${showAnnotations ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' : 'bg-transparent text-zinc-300 hover:bg-zinc-800 border border-zinc-800'}`}>
                                     {showAnnotations ? <PanelRightClose size={14} /> : <PanelRightOpen size={14} />}
-                                    {annotationCount} {annotationCount === 1 ? 'note' : 'notes'}
+                                    {annotationCount}<span className="hidden md:inline">{annotationCount === 1 ? ' note' : ' notes'}</span>
                                   </button>
                                 )}
                                 <div className="relative">
-                                  <button onClick={() => { if (annotationMode) setShowAnnotations(false); setAnnotationMode(!annotationMode); if (showAnnotateTip) setShowAnnotateTip(false); }} className={`px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition ${annotationMode ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-100 text-zinc-900 hover:bg-white shadow-lg'}`}>
+                                  <button onClick={() => { if (annotationMode) closeAnnotations(); setAnnotationMode(!annotationMode); if (showAnnotateTip) setShowAnnotateTip(false); }} className={`px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition whitespace-nowrap flex-shrink-0 ${annotationMode ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-100 text-zinc-900 hover:bg-white shadow-lg'}`}>
                                     {annotationMode ? <X size={14} /> : <Edit3 size={14} />}
-                                    {annotationMode ? 'Exit Annotate' : 'Annotate'}
+                                    {annotationMode ? (
+                                      <><span className="md:hidden">Exit</span><span className="hidden md:inline">Exit Annotate</span></>
+                                    ) : 'Annotate'}
                                   </button>
                                   {showAnnotateTip && (
                                     <div className="absolute top-full right-0 mt-2 w-64 bg-[#3f8efc] text-white rounded-lg shadow-2xl p-3 z-30 animate-coach-in-down">
@@ -2151,15 +2223,25 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                     )}
                   </div>
 
-                  {/* Annotations panel */}
+                  {/* Annotations panel — side panel on desktop, bottom-sheet drawer on mobile. */}
                   {activeMedia?.type === 'image' && showAnnotations && (
-                    <div className="w-64 bg-zinc-900 border-l border-zinc-800 flex flex-col flex-shrink-0">
-                      <div className="px-3 py-2.5 border-b border-zinc-800 flex items-center justify-between">
+                    <>
+                      {/* Mobile backdrop — tap to dismiss. */}
+                      <div
+                        className="md:hidden fixed inset-0 z-40 bg-black/50"
+                        onClick={closeAnnotations}
+                      />
+                      <div className={`fixed md:relative bottom-0 inset-x-0 md:bottom-auto md:inset-x-auto z-50 md:z-auto max-h-[75vh] md:max-h-none w-auto md:w-64 md:flex-shrink-0 bg-zinc-900 border-t md:border-t-0 md:border-l border-zinc-800 rounded-t-lg md:rounded-none flex flex-col ${annotationsClosing ? 'animate-slide-down' : 'animate-slide-up'} md:animate-none shadow-2xl md:shadow-none`}>
+                        {/* Mobile drag-handle affordance */}
+                        <div className="md:hidden flex justify-center pt-2 pb-1 flex-shrink-0">
+                          <div className="w-10 h-1 rounded-full bg-zinc-700" />
+                        </div>
+                        <div className="px-3 py-2.5 border-b border-zinc-800 flex items-center justify-between flex-shrink-0">
                         <div>
                           <h3 className="font-semibold text-zinc-100 text-sm">Annotations</h3>
                           <p className="text-[11px] text-zinc-500 mt-0.5">{annotationCount} {annotationCount === 1 ? 'note' : 'notes'}</p>
                         </div>
-                        <button onClick={() => setShowAnnotations(false)} className="text-zinc-500 hover:text-zinc-200 p-1 rounded hover:bg-zinc-800 transition"><X size={14} /></button>
+                        <button onClick={closeAnnotations} className="text-zinc-500 hover:text-zinc-200 p-1 rounded hover:bg-zinc-800 transition"><X size={14} /></button>
                       </div>
 
                       {currentAnnotation && (
@@ -2222,6 +2304,7 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
                         )}
                       </div>
                     </div>
+                    </>
                   )}
                 </div>
 
