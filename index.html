@@ -2310,9 +2310,17 @@ ${feedbacksHTML || '<p class="empty">No feedback to display</p>'}
 
                 {/* Bottom panel */}
                 <div className="bg-zinc-900 border-t border-zinc-800 flex-shrink-0">
-                  <button onClick={() => setBottomCollapsed(!bottomCollapsed)} className="w-full flex items-center justify-between px-4 py-1.5 text-[11px] text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50 transition">
-                    <span className="font-medium uppercase tracking-wide">{bottomCollapsed ? displayTitle(activeFeedback) : 'Feedback details'}</span>
-                    {bottomCollapsed ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                  <button onClick={() => setBottomCollapsed(!bottomCollapsed)} className="w-full flex items-center justify-between gap-2 px-4 py-3 md:py-1.5 text-[11px] text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50 transition">
+                    <span className="flex items-center min-w-0">
+                      <span className="font-medium uppercase tracking-wide flex-shrink-0">Feedback Details</span>
+                      {bottomCollapsed && (
+                        <>
+                          <span className="mx-1.5 text-zinc-700 flex-shrink-0">•</span>
+                          <span className="font-medium tracking-normal text-zinc-300 truncate">{displayTitle(activeFeedback)}</span>
+                        </>
+                      )}
+                    </span>
+                    {bottomCollapsed ? <ChevronUp size={12} className="flex-shrink-0" /> : <ChevronDown size={12} className="flex-shrink-0" />}
                   </button>
                   {!bottomCollapsed && (
                     <div className="px-4 pb-3">
